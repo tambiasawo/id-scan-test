@@ -67,7 +67,7 @@ const IdentityVerification = () => {
   const submitVerification = () => {
     handleSubmitVerification({ idImage, selfieImage });
   };
-
+  console.log({ data, error });
   return (
     <div className={styles.container}>
       {loading && (
@@ -82,7 +82,16 @@ const IdentityVerification = () => {
             <h2 className={styles.header}>
               Step 1: Capture or Upload ID Document
             </h2>
-
+            <span
+              style={{
+                fontSize: "13px",
+                textAlign: "center",
+                marginBottom: "9px",
+              }}
+            >
+              Please ensure the corners of your ID touch the edge of the capture
+              area
+            </span>
             {/* Webcam Capture */}
             <Webcam
               audio={false}
@@ -129,7 +138,11 @@ const IdentityVerification = () => {
                 </button>
               </>
             ) : (
-              <img src={selfieImage} alt="" className={styles.faceWebcam} />
+              <img
+                src={selfieImage}
+                alt="selfie"
+                className={styles.faceWebcam}
+              />
             )}
           </div>
         )}
