@@ -23,7 +23,6 @@ export async function POST(req: Request) {
         { status: response.status || 500 }
       );
     }
-    console.log(process.env.API_URL);
     const data = await response.json();
     console.log({ response, data });
     return NextResponse.json(data);

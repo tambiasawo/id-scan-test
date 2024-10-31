@@ -98,7 +98,11 @@
   margin: 10px 0;
   font-size: 1rem;
 }
-
+.uploadContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 .uploadInput {
   display: block;
   padding: 10px;
@@ -117,4 +121,9 @@
   width: 100%;
   max-width: 300px;
   margin-top: 15px;
+}
+.bottomText {
+  margin-top: 60px;
+  text-decoration: underline;
+  cursor: pointer;
 }

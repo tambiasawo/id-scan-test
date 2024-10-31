@@ -1,10 +1,5 @@
 "use client";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useRef,
-  useState,
-} from "react";
+import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import styles from "./ImageCapture.module.css";
 
@@ -104,7 +99,7 @@ const IdentityVerification = () => {
 
             {/* Upload Option */}
             <p className={styles.orText}>or</p>
-            <div>
+            <div className={styles.uploadContainer}>
               <input
                 type="file"
                 accept="image/*"
@@ -153,6 +148,7 @@ const IdentityVerification = () => {
             setIdImage("");
             setStep(1);
           }}
+          className={styles.bottomText}
         >
           Start all over
         </span>
