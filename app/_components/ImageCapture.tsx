@@ -98,6 +98,9 @@ const IdentityVerification = () => {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               className={styles.webcam}
+              videoConstraints={{
+                facingMode: "environment",
+              }}
             />
             <button
               onClick={() => captureImage(setIdImage)}
