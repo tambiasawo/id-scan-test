@@ -19,8 +19,8 @@ export async function POST(req: Request) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { message: "Could not verify" },
-        { status: 400 }
+        { message: "Something went wrong. Pls try again later" },
+        { status: response.status || 500 }
       );
     }
 

@@ -1,6 +1,5 @@
 "use client";
 import React, {
-  ChangeEventHandler,
   Dispatch,
   SetStateAction,
   useRef,
@@ -15,6 +14,8 @@ const IdentityVerification = () => {
   const [selfieImage, setSelfieImage] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [error, setError] = useState(null);
 
   const handleSubmitVerification = async (images: {
     idImage: string;
@@ -32,15 +33,18 @@ const IdentityVerification = () => {
       if (!response.ok) {
         const errorData = await response.json();
         console.log("Verification error:", errorData.message);
+        setError(errorData.message);
         return; // Stop execution if the response is not OK
       }
 
       const data = await response.json();
       console.log("Verification successful:", data);
+      setData(data);
     } catch (err) {
       console.log("Verification failed:", err);
     }
   };
+
   const captureImage = (setImage: Dispatch<SetStateAction<string>>) => {
     const imageSrc: string = webcamRef.current?.getScreenshot() || "";
     setImage(imageSrc);
