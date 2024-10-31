@@ -71,6 +71,16 @@
   border-radius: 10px;
   margin-bottom: 10px;
 }
+
+@media screen and (max-width: 640px) {
+  .webcam {
+    width: 100%; /* Expand to full width on mobile */
+    height: 150px; /* Adjust height for a more rectangular shape */
+    object-fit: cover; /* Ensures the ID fills the frame properly */
+    border-radius: 5px;
+  }
+}
+
 .faceWebcam {
   width: 100%;
   max-width: 250px; /* Restrict width for a circular/oval shape */
