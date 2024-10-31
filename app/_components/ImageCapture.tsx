@@ -2,6 +2,7 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import styles from "./ImageCapture.module.css";
+import { createReport } from "../actions";
 
 const IdentityVerification = () => {
   const webcamRef = useRef<Webcam>(null);
@@ -11,14 +12,18 @@ const IdentityVerification = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const handleSubmitVerification = async (images: {
     idImage: string;
     selfieImage: string;
   }) => {
-    console.log({ images });
-
+    setHasSubmitted(true);
     try {
+      setError(null);
+      setData([]);
+      startLoadingTransition(3, 3500);
+
       const response = await fetch("/api/verify-identity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,10 +36,10 @@ const IdentityVerification = () => {
         setError(errorData.message);
         return; // Stop execution if the response is not OK
       }
-
       const data = await response.json();
       console.log("Verification successful:", data);
       setData(data);
+      createReport(data);
     } catch (err) {
       console.log("Verification failed:", err);
     }
@@ -43,7 +48,7 @@ const IdentityVerification = () => {
   const captureImage = (setImage: Dispatch<SetStateAction<string>>) => {
     const imageSrc: string = webcamRef.current?.getScreenshot() || "";
     setImage(imageSrc);
-    startLoadingTransition();
+    startLoadingTransition(2);
   };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,23 +56,30 @@ const IdentityVerification = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setIdImage(reader.result as string);
-      startLoadingTransition();
+      startLoadingTransition(2);
     };
     if (file) reader.readAsDataURL(file);
   };
 
-  const startLoadingTransition = () => {
+  const startLoadingTransition = (step: number, delay?: number) => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setStep(2);
-    }, 2000);
+      setStep(step);
+    }, delay ?? 1000);
   };
 
   const submitVerification = () => {
     handleSubmitVerification({ idImage, selfieImage });
   };
   console.log({ data, error });
+  if (error)
+    return (
+      <div>
+        An unexpected error occurred. Please ensure the image quality is good
+        and try again
+      </div>
+    );
   return (
     <div className={styles.container}>
       {loading && (
@@ -151,13 +163,13 @@ const IdentityVerification = () => {
         )}
       </div>
 
-      {idImage && selfieImage && (
+      {idImage && selfieImage && step === 2 && (
         <button onClick={submitVerification} className={styles.submitButton}>
           Submit for Verification
         </button>
       )}
 
-      {selfieImage && idImage && (
+      {idImage && step == 2 && (
         <span
           onClick={() => {
             setSelfieImage("");
@@ -168,6 +180,11 @@ const IdentityVerification = () => {
         >
           Start all over
         </span>
+      )}
+      {step === 3 && (
+        <div style={{ marginTop: "30%" }}>
+          <button className={styles.captureButton}>See Result</button>
+        </div>
       )}
     </div>
   );
