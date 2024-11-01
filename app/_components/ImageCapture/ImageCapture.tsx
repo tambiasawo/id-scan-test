@@ -14,7 +14,6 @@ const IdentityVerification = () => {
   const [error, setError] = useState(null);
 
   const handleSubmitVerification = async () => {
-    console.log({ selfieImage, idImage });
     try {
       setError(null);
       setData([]);
@@ -24,7 +23,7 @@ const IdentityVerification = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ selfieImage, idImage }),
       });
-
+      console.log({ selfieImage, idImage });
       if (!response.ok) {
         const errorData = await response.json();
         console.log("Verification error:", errorData.message);
@@ -62,10 +61,22 @@ const IdentityVerification = () => {
   if (error)
     return (
       <div className={styles.errorContainer}>
-        <div>
+        <div style={{ marginTop: "50px", color: "red" }}>
           An unexpected error occurred. Please ensure the image quality is good
           and try again
         </div>
+        <span
+          onClick={() => {
+            setSelfieImage("");
+            setIdImage("");
+            setStep(1);
+            setError(null);
+            setLoading(false);
+          }}
+          className={styles.bottomText}
+        >
+          Start all over
+        </span>
       </div>
     );
   return (
