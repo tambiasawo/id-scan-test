@@ -120,7 +120,7 @@ const PdfGenerator = ({ data }: { data: any }) => {
     let last_name = "",
       dob = "";
     const verification_status = data.verificationStatus;
-    const verificationPassed = verification_status.includes("Not");
+    const verificationPassed = verification_status.lowercase().includes("not");
     fields.push(["Verification Result", verification_status]);
 
     data.aditionalData.filter((item: any) => {
