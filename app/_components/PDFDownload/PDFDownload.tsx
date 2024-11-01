@@ -120,7 +120,6 @@ const PdfGenerator = ({ data }: { data: any }) => {
     let last_name = "",
       dob = "";
     const verification_status = data.verificationStatus;
-    console.log({ verification_status });
 
     const verificationPassed = !verification_status
       .toLowerCase()

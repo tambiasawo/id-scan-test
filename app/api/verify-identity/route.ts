@@ -16,7 +16,6 @@ export async function POST(req: Request) {
         clientId: "5c26de07-c357-47a8-aee1-90acaa0e2202",
       }),
     });
-    //console.log({ response });
     if (!response.ok) {
       const error = await response.json();
 

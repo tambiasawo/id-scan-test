@@ -27,7 +27,6 @@ export async function POST(req: Request) {
   };
 
   try {
-    console.log({ PDFfile, fileName, verificationPassed, AWS_ACCESS_KEY_ID });
     const data = await s3.upload(params).promise();
     console.log(`File uploaded successfully`);
     return NextResponse.json({ location: data.Location }); // Return the S3 URL

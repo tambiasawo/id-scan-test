@@ -23,7 +23,6 @@ const IdentityVerification = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ selfieImage, idImage }),
       });
-      console.log({ selfieImage, idImage });
       if (!response.ok) {
         const errorData = await response.json();
         console.log("Verification error:", errorData.message);
@@ -57,7 +56,6 @@ const IdentityVerification = () => {
     if (file) reader.readAsDataURL(file);
   };
 
-  console.log({ data, error });
   if (error)
     return (
       <div className={styles.errorContainer}>

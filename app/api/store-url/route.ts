@@ -4,7 +4,6 @@ export async function POST(req: Request) {
   const { last_name, dob, report_url, fileName, verification_status } =
     await req.json();
   try {
-    console.log({ last_name, dob, report_url, fileName, verification_status });
     const response = await fetch(
       `${process.env.WORDPRESS_BASE_API}/save-report/`,
       {
