@@ -62,8 +62,16 @@ const IdentityVerification = () => {
     return (
       <div className={styles.errorContainer}>
         <div style={{ marginTop: "50px", color: "red" }}>
-          An unexpected error occurred. Please ensure the image quality is good
-          and try again
+          <p>
+            The image is unreadable. Please ensure you follow all necessary
+            requirements as shown
+            <a
+              style={{ color: "red" }}
+              href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
+            >
+              here
+            </a>{" "}
+          </p>
         </div>
         <span
           onClick={() => {
@@ -100,8 +108,11 @@ const IdentityVerification = () => {
                 marginBottom: "9px",
               }}
             >
-              Please ensure the corners of your ID touch the edge of the capture
-              area
+              Please ensure your ID fills no more than 80% of the capture area.
+              For details, click{" "}
+              <a href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/">
+                here
+              </a>
             </span>
             {/* Webcam Capture */}
             <Webcam
