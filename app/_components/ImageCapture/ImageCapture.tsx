@@ -108,7 +108,7 @@ const IdentityVerification = () => {
                 marginBottom: "9px",
               }}
             >
-              Please ensure your ID fills no more than 80% of the capture area.
+              Please ensure your ID fills no more than 70% of the capture area.
               For details, click{" "}
               <a href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/">
                 here

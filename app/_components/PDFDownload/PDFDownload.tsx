@@ -120,9 +120,12 @@ const PdfGenerator = ({ data }: { data: any }) => {
     let last_name = "",
       dob = "";
     const verification_status = data.verificationStatus;
-    const verificationPassed = verification_status.lowercase().includes("not");
-    fields.push(["Verification Result", verification_status]);
+    console.log({ verification_status });
 
+    const verificationPassed = !verification_status
+      .toLowerCase()
+      .includes("not");
+    fields.push(["Verification Result", verification_status]);
     data.aditionalData.filter((item: any) => {
       if (item["name"] === "Surname") {
         fields.push([item.name, item.value]);
