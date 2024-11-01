@@ -137,3 +137,12 @@
   text-decoration: underline;
   cursor: pointer;
 }
+
+.iframeParentContainer,
+.errorContainer {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+}

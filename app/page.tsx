@@ -1,4 +1,4 @@
-import IdentityVerification from "./_components/ImageCapture";
+import IdentityVerification from "./_components/ImageCapture/ImageCapture";
 import Header from "./_components/Header/Header";
 
 export default function Home() {

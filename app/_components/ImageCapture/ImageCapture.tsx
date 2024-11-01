@@ -2,7 +2,7 @@
 import React, { Dispatch, SetStateAction, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import styles from "./ImageCapture.module.css";
-import { createReport } from "../actions";
+import PdfGenerator from "../PDFDownload/PDFDownload";
 
 const IdentityVerification = () => {
   const webcamRef = useRef<Webcam>(null);
@@ -12,22 +12,17 @@ const IdentityVerification = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [error, setError] = useState(null);
-  const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  const handleSubmitVerification = async (images: {
-    idImage: string;
-    selfieImage: string;
-  }) => {
-    setHasSubmitted(true);
+  const handleSubmitVerification = async () => {
+    console.log({ selfieImage, idImage });
     try {
       setError(null);
       setData([]);
-      startLoadingTransition(3, 3500);
-
+      setLoading(true);
       const response = await fetch("/api/verify-identity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(images),
+        body: JSON.stringify({ selfieImage, idImage }),
       });
 
       if (!response.ok) {
@@ -39,16 +34,18 @@ const IdentityVerification = () => {
       const data = await response.json();
       console.log("Verification successful:", data);
       setData(data);
-      createReport(data);
+      setLoading(false);
+      setStep(3);
     } catch (err) {
       console.log("Verification failed:", err);
+      setLoading(false);
     }
   };
 
   const captureImage = (setImage: Dispatch<SetStateAction<string>>) => {
     const imageSrc: string = webcamRef.current?.getScreenshot() || "";
     setImage(imageSrc);
-    startLoadingTransition(2);
+    setStep(2);
   };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,28 +53,19 @@ const IdentityVerification = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setIdImage(reader.result as string);
-      startLoadingTransition(2);
+      setStep(2);
     };
     if (file) reader.readAsDataURL(file);
   };
 
-  const startLoadingTransition = (step: number, delay?: number) => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setStep(step);
-    }, delay ?? 1000);
-  };
-
-  const submitVerification = () => {
-    handleSubmitVerification({ idImage, selfieImage });
-  };
   console.log({ data, error });
   if (error)
     return (
-      <div>
-        An unexpected error occurred. Please ensure the image quality is good
-        and try again
+      <div className={styles.errorContainer}>
+        <div>
+          An unexpected error occurred. Please ensure the image quality is good
+          and try again
+        </div>
       </div>
     );
   return (
@@ -113,6 +101,7 @@ const IdentityVerification = () => {
               videoConstraints={{
                 facingMode: "environment",
               }}
+              imageSmoothing
             />
             <button
               onClick={() => captureImage(setIdImage)}
@@ -144,6 +133,7 @@ const IdentityVerification = () => {
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
                   className={styles.faceWebcam}
+                  imageSmoothing
                 />
                 <button
                   onClick={() => captureImage(setSelfieImage)}
@@ -164,7 +154,10 @@ const IdentityVerification = () => {
       </div>
 
       {idImage && selfieImage && step === 2 && (
-        <button onClick={submitVerification} className={styles.submitButton}>
+        <button
+          onClick={handleSubmitVerification}
+          className={styles.submitButton}
+        >
           Submit for Verification
         </button>
       )}
@@ -182,8 +175,8 @@ const IdentityVerification = () => {
         </span>
       )}
       {step === 3 && (
-        <div style={{ marginTop: "30%" }}>
-          <button className={styles.captureButton}>See Result</button>
+        <div className={styles.iframeParentContainer}>
+          <PdfGenerator data={data} />
         </div>
       )}
     </div>
