@@ -68,7 +68,9 @@ const IdentityVerification = () => {
   async function checkCameraStatus() {
     try {
       const cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
+        video: {
+          facingMode: isMobileDevice ? "user" : "environment",
+        },
       });
       if (cameraStream) {
         setIsCameraOn(true);
@@ -196,32 +198,17 @@ const IdentityVerification = () => {
                   : "⚠️ Camera not detected"}
               </div>
             ) : ( */}
-            {!isMobileDevice ? (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                className={styles.webcam}
-                videoConstraints={
-                  {
-                    //facingMode: { exact: "environment" }, // Explicitly use the back camera
-                  }
-                }
-                imageSmoothing
-              />
-            ) : (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                className={styles.webcam}
-                videoConstraints={{
-                  facingMode: { exact: "environment" }, // Explicitly use the back camera
-                }}
-                imageSmoothing
-              />
-            )}
 
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              className={styles.webcam}
+              videoConstraints={{
+                facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
+              }}
+              imageSmoothing
+            />
             <button
               onClick={() => captureImage(setIdImage)}
               className={styles.captureButton}
@@ -266,6 +253,9 @@ const IdentityVerification = () => {
                     ref={webcamRef}
                     screenshotFormat="image/jpeg"
                     className={styles.faceWebcam}
+                    videoConstraints={{
+                      facingMode: "user", // Use the front camera for selfies
+                    }}
                     imageSmoothing
                   />
                 )}
