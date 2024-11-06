@@ -3,15 +3,14 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const { last_name, dob, report_url, fileName, verification_status } =
     await req.json();
-  console.log({ last_name, dob, report_url, fileName, verification_status });
   try {
     const response = await fetch(
       `${process.env.WORDPRESS_BASE_API}/save-report/`,
       {
         method: "POST",
         body: JSON.stringify({
-          last_name,
-          dob,
+          last_name: last_name || "Unknown",
+          dob: dob.includes("?") || !dob ? "Unknown" : dob,
           fileName,
           report_url,
           verification_status,

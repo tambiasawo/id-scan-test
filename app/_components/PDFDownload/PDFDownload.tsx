@@ -242,8 +242,8 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
   };
   if (error) {
     return (
-      <div style={{ display: "grid", placeItems: "center" }}>
-        An error has occurred. Please try again
+      <div style={{ display: "grid", placeItems: "center",color:'red' }}>
+        An error has occurred. Please refresh the page to try again
       </div>
     );
   }

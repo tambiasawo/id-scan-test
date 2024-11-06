@@ -101,8 +101,11 @@ const IdentityVerification = () => {
       <div className={styles.errorContainer}>
         <div style={{ marginTop: "50px", color: "red" }}>
           <p style={{ textAlign: "center" }}>
-            The image is unreadable. Please ensure you follow all necessary
-            requirements as shown{" "}
+            Some texts in the ID image were unreadable.{" "}
+          </p>
+          <p style={{ textAlign: "center" }}>
+            Please ensure you follow all necessary requirements when taking
+            photo as shown{" "}
             <a
               style={{ color: "red" }}
               href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
@@ -129,20 +132,23 @@ const IdentityVerification = () => {
               setStep(1);
               setError(null);
               setLoading(false);
+              setShowQRCode(false);
             }}
             className={styles.bottomText}
           >
-            Start all over
+            Try again
           </span>
-          <span
-            className={styles.bottomText}
-            onClick={() => {
-              setShowQRCode(true);
-            }}
-          >
-            {" "}
-            Switch to mobile
-          </span>
+          {!isMobileDevice && !showQRCode && (
+            <span
+              className={styles.bottomText}
+              onClick={() => {
+                setShowQRCode(true);
+              }}
+            >
+              {" "}
+              Switch to mobile
+            </span>
+          )}
           {showQRCode && (
             <QRCode url={"https://main.d3vmd0xhcxraa2.amplifyapp.com/"} />
           )}{" "}
