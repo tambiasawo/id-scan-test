@@ -66,10 +66,11 @@
   }
 }
 .webcam {
-  width: 80%;
-  height: auto;
+  width: 90%;
+  height: 40vh;
   border-radius: 10px;
   margin-bottom: 10px;
+  object-fit: cover;
 }
 
 @media screen and (max-width: 640px) {
@@ -133,7 +134,6 @@
   margin-top: 15px;
 }
 .bottomText {
-  margin-top: 60px;
   text-decoration: underline;
   cursor: pointer;
 }
