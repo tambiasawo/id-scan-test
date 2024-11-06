@@ -24,7 +24,7 @@ const IdentityVerification = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    //checkCameraStatus();
+    checkCameraStatus();
     if (!token) {
       // router.push("/404");
     } else {
@@ -184,7 +184,7 @@ const IdentityVerification = () => {
               Please ensure your ID fills no more than 70% of the capture area
             </span>
             {/* Webcam Capture */}
-            {/*       {!isCameraOn ? (
+            {!isMobileDevice && !isCameraOn ? (
               <div
                 className={styles.webcam}
                 style={{
@@ -197,17 +197,17 @@ const IdentityVerification = () => {
                   ? "Loading Camera..."
                   : "⚠️ Camera not detected"}
               </div>
-            ) : ( */}
-
-            <Webcam
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              className={styles.webcam}
-              videoConstraints={{
-                facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
-              }}
-              imageSmoothing
-            />
+            ) : (
+              <Webcam
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className={styles.webcam}
+                videoConstraints={{
+                  facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
+                }}
+                imageSmoothing
+              />
+            )}
             <button
               onClick={() => captureImage(setIdImage)}
               className={styles.captureButton}
