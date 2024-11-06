@@ -33,7 +33,8 @@ const saveToS3 = async (
     if (!response.ok) {
       const errorData = await response.json();
       console.log({ errorData });
-      return;
+
+      return "An error occurred";
     }
     const data = await response.json();
     console.log(`File uploaded successfully`);
@@ -71,6 +72,7 @@ const saves3LinkInWordPress = async (
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Error saving report URL:", errorData);
+      return "An error occured";
     } else {
       const responseData = await response.json();
       console.log("Report URL saved successfully:", responseData);
@@ -79,21 +81,25 @@ const saves3LinkInWordPress = async (
   } catch (error) {
     console.log(error);
     console.error("Failed to upload PDF:", error);
+    return "An error occured";
   }
 };
 
-const PdfGenerator = ({ data }: { data: any }) => {
+const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
   const [pdfUrl, setPdfUrl] = React.useState("");
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState("");
 
   const generatePDF = async () => {
+    setLoading(true);
     const doc = new jsPDF();
     const logo = logoImage;
     // Add logo
-    doc.addImage(logo, "PNG", 88, 10, 28, 38); // Adjust position and size for center alignment
+    doc.addImage(logo, "PNG", 94, 10, 20, 28); // Adjust position and size for center alignment
 
     // Add a "button" with text centered inside it
     const buttonX = 70; // X position for the button
-    const buttonY = 51; // Y position for the button
+    const buttonY = 43; // Y position for the button
     const buttonWidth = 70; // Button width
     const buttonHeight = 10; // Button height
     const rX = 3;
@@ -109,7 +115,7 @@ const PdfGenerator = ({ data }: { data: any }) => {
     // Add text inside the "button"
     doc.setTextColor("#ffffff"); // White text color
     doc.setFontSize(12);
-    doc.text("Membership has its benefits", 105, 57, { align: "center" });
+    doc.text("Membership has its benefits", 105, 49, { align: "center" });
 
     // Reset font color to black for the rest of the content
     doc.setTextColor("#000000");
@@ -125,6 +131,8 @@ const PdfGenerator = ({ data }: { data: any }) => {
       .toLowerCase()
       .includes("not");
     fields.push(["Verification Result", verification_status]);
+    fields.push(["Face", idImage]);
+
     data.aditionalData.filter((item: any) => {
       if (item["name"] === "Surname") {
         fields.push([item.name, item.value]);
@@ -167,13 +175,51 @@ const PdfGenerator = ({ data }: { data: any }) => {
       return;
     });
 
+    let yPosition = 72; // Starting Y position on the page
+
     fields.forEach((field, index) => {
-      doc.setFont("Helvetica", "bold");
-      doc.setTextColor("#999999");
-      doc.text(`${field[0]}`, 10, 72 + index * 20);
-      doc.setTextColor("#000");
-      doc.setFont("Helvetica", "normal");
-      doc.text(field[1], 10, 82 + index * 20);
+      if (field[0] === "Face" && index === 1) {
+        doc.setFontSize(13);
+        doc.setFont("Helvetica", "bold");
+        doc.setTextColor("#999999");
+        doc.text(`${field[0]}`, 10, yPosition + 14);
+
+        doc.addImage(idImage, "JPEG", 10, yPosition + 17, 80, 80);
+        yPosition += 111;
+      } else if (field[0] === "Verification Result" && index === 0) {
+        let pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
+        let textWidth = doc.getTextWidth(field[1]); // Get the width of the text
+        let xPosition = (pageWidth - textWidth) / 2; // Calculate X position for centering
+        doc.setFontSize(20);
+        doc.setFont("Helvetica", "bold");
+        doc.setTextColor(verificationPassed ? "green" : "red");
+        doc.text(
+          `Verification Result: ${verificationPassed ? "Passed" : "Failed"}`,
+          xPosition + 10,
+          yPosition,
+          { align: "center" }
+        );
+      } else {
+        // Check if we need a new page after 10 entries (or based on your page layout)
+        if (index > 0 && index % 7 === 0) {
+          doc.addPage();
+          yPosition = 22; // Reset Y position at the top of the new page
+        }
+
+        doc.setFontSize(13);
+        // Render field name
+        doc.setFont("Helvetica", "bold");
+        doc.setTextColor("#999999");
+        doc.text(`${field[0]}`, 10, yPosition);
+
+        // Render field value
+        doc.setTextColor("#000");
+        doc.setFont("Helvetica", "normal");
+        doc.text(field[1], 10, yPosition + 10);
+
+        // Update Y position for the next entry
+        yPosition += 22;
+      }
     });
 
     const pdfBlob = doc.output("blob");
@@ -185,36 +231,61 @@ const PdfGenerator = ({ data }: { data: any }) => {
       last_name,
       dob
     );
-    setPdfUrl(s3Url);
+    const isValidURL = (s3Url: string) => /^https?:\/\/\S+\.\S+/.test(s3Url);
+    console.log(isValidURL(s3Url));
+    if (isValidURL(s3Url)) {
+      setPdfUrl(s3Url);
+    } else {
+      setError("Sorry an expected error occured. Please try again");
+    }
+    setLoading(false);
   };
-
   return (
     <div className={styles.iframe_container}>
       {pdfUrl ? (
-        <iframe
-          src={pdfUrl}
-          width="100%"
-          height="500px"
-          title="Generated PDF"
-          style={{ border: "1px solid #ddd", marginTop: "20px" }}
-        />
+        <>
+          <iframe
+            src={pdfUrl}
+            width="100%"
+            height="500px"
+            title="Generated PDF"
+            style={{ border: "1px solid #ddd", marginTop: "20px" }}
+          />
+          <a
+            href={pdfUrl}
+            download="generated_report.pdf"
+            style={{
+              display: "inline-block",
+              marginTop: "10px",
+              padding: "10px 20px",
+              backgroundColor: "#4caf50",
+              color: "#fff",
+              textDecoration: "none",
+              borderRadius: "5px",
+              fontSize: "1rem",
+            }}
+          >
+            Download PDF
+          </a>
+        </>
       ) : (
         <button
+          disabled={loading}
           onClick={generatePDF}
           style={{
             padding: "10px 20px",
-            backgroundColor: "#4caf50",
+            backgroundColor: loading ? "gray" : "#4caf50",
             color: "#fff",
             border: "none",
             marginTop: "10px",
             borderRadius: "5px",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             fontSize: "1rem",
             width: "100%",
             maxWidth: "200px",
           }}
         >
-          View Report
+          {!loading ? "View Report" : "Generating Report..."}
         </button>
       )}
     </div>
