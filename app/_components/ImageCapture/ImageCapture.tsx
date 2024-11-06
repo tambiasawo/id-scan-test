@@ -196,16 +196,31 @@ const IdentityVerification = () => {
                   : "⚠️ Camera not detected"}
               </div>
             ) : ( */}
-            <Webcam
-              audio={false}
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              className={styles.webcam}
-              videoConstraints={{
-                facingMode: { exact: "environment" }, // Explicitly use the back camera
-              }}
-              imageSmoothing
-            />
+            {!isMobileDevice ? (
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className={styles.webcam}
+                videoConstraints={
+                  {
+                    //facingMode: { exact: "environment" }, // Explicitly use the back camera
+                  }
+                }
+                imageSmoothing
+              />
+            ) : (
+              <Webcam
+                audio={false}
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className={styles.webcam}
+                videoConstraints={{
+                  facingMode: { exact: "environment" }, // Explicitly use the back camera
+                }}
+                imageSmoothing
+              />
+            )}
 
             <button
               onClick={() => captureImage(setIdImage)}
