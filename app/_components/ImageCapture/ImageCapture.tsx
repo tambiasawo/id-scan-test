@@ -180,26 +180,38 @@ const IdentityVerification = () => {
               Please ensure your ID fills no more than 70% of the capture area
             </span>
             {/* Webcam Capture */}
-            {!isMobileDevice && !isCameraOn ? (
-              <div
-                className={styles.webcam}
-                style={{
-                  height: "200px",
-                  display: "grid",
-                  placeItems: "center",
-                }}
-              >
-                {isCameraOn === undefined
-                  ? "Loading Camera..."
-                  : "⚠️ Camera not detected"}
-              </div>
+            {!isMobileDevice ? (
+              !isCameraOn ? (
+                <div
+                  className={styles.webcam}
+                  style={{
+                    height: "200px",
+                    display: "grid",
+                    placeItems: "center",
+                  }}
+                >
+                  {isCameraOn === undefined
+                    ? "Loading Camera..."
+                    : "⚠️ Camera not detected"}
+                </div>
+              ) : (
+                <Webcam
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  className={styles.webcam}
+                  /*  videoConstraints={{
+                    facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
+                  }} */
+                  imageSmoothing
+                />
+              )
             ) : (
               <Webcam
                 ref={webcamRef}
                 screenshotFormat="image/jpeg"
                 className={styles.webcam}
                 videoConstraints={{
-                  facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
+                  facingMode: "environment", // Back camera for mobile and front for laptops
                 }}
                 imageSmoothing
               />
