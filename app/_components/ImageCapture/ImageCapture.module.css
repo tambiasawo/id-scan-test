@@ -75,7 +75,7 @@
 
 @media screen and (max-width: 640px) {
   .webcam {
-    width: 80%; /* Expand to full width on mobile */
+    width: 100%; /* Expand to full width on mobile */
     height: 220px; /* Adjust height for a more rectangular shape */
     object-fit: cover; /* Ensures the ID fills the frame properly */
     border-radius: 5px;

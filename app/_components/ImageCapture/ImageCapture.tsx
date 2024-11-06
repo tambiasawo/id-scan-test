@@ -83,7 +83,7 @@ const IdentityVerification = () => {
   const captureImage = (setImage: Dispatch<SetStateAction<string>>) => {
     const imageSrc: string = webcamRef.current?.getScreenshot() || "";
     setImage(imageSrc);
-    setStep(2);
+    if (imageSrc) setStep(2);
   };
 
   const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -91,7 +91,7 @@ const IdentityVerification = () => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setIdImage(reader.result as string);
-      setStep(2);
+      if (reader.result) setStep(2);
     };
     if (file) reader.readAsDataURL(file);
   };
