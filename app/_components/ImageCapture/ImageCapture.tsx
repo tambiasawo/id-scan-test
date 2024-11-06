@@ -199,9 +199,6 @@ const IdentityVerification = () => {
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
                   className={styles.webcam}
-                  /*  videoConstraints={{
-                    facingMode: isMobileDevice ? "environment" : "user", // Back camera for mobile and front for laptops
-                  }} */
                   imageSmoothing
                 />
               )
@@ -243,29 +240,17 @@ const IdentityVerification = () => {
             <h2 className={styles.header}>Step 2: Capture Selfie</h2>
             {!selfieImage ? (
               <>
-                {!isCameraOn ? (
-                  <div
-                    className={styles.webcam}
-                    style={{
-                      height: "200px",
-                      display: "grid",
-                      placeItems: "center",
-                    }}
-                  >
-                    ⚠️ Camera not detected
-                  </div>
-                ) : (
-                  <Webcam
-                    audio={false}
-                    ref={webcamRef}
-                    screenshotFormat="image/jpeg"
-                    className={styles.faceWebcam}
-                    videoConstraints={{
-                      facingMode: "user", // Use the front camera for selfies
-                    }}
-                    imageSmoothing
-                  />
-                )}
+                <Webcam
+                  audio={false}
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  className={styles.faceWebcam}
+                  videoConstraints={{
+                    facingMode: "user", // Use the front camera for selfies
+                  }}
+                  imageSmoothing
+                />
+
                 <button
                   onClick={() => captureImage(setSelfieImage)}
                   className={styles.captureButton}
