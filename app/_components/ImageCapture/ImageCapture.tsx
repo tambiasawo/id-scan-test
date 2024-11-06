@@ -24,7 +24,7 @@ const IdentityVerification = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    checkCameraStatus();
+    //checkCameraStatus();
     if (!token) {
       // router.push("/404");
     } else {
@@ -200,7 +200,6 @@ const IdentityVerification = () => {
             ) : ( */}
 
             <Webcam
-              audio={false}
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               className={styles.webcam}

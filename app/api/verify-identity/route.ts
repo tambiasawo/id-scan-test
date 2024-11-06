@@ -4,7 +4,7 @@ export async function POST(req: Request) {
   const { idImage, selfieImage } = await req.json();
 
   try {
-    const response = await fetch(`${process.env.API_URL}`, {
+    const response = await fetch(`${process.env.API_PROD_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -13,9 +13,10 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         document: idImage,
         portrait: selfieImage,
-        clientId: "5c26de07-c357-47a8-aee1-90acaa0e2202",
+        clientId: "wLaylGidsf3mwrIUSeY9X4SpSBQp8QUV4oFfaUlU",
       }),
     });
+    console.log({ response });
     if (!response.ok) {
       const error = await response.json();
 
