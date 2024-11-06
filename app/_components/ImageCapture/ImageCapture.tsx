@@ -201,9 +201,9 @@ const IdentityVerification = () => {
               ref={webcamRef}
               screenshotFormat="image/jpeg"
               className={styles.webcam}
-              /*   videoConstraints={{
+              videoConstraints={{
                 facingMode: "environment",
-              }} */
+              }}
               imageSmoothing
             />
 
