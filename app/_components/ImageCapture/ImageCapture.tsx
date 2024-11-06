@@ -182,7 +182,7 @@ const IdentityVerification = () => {
               Please ensure your ID fills no more than 70% of the capture area
             </span>
             {/* Webcam Capture */}
-            {!isCameraOn ? (
+            {/*       {!isCameraOn ? (
               <div
                 className={styles.webcam}
                 style={{
@@ -195,18 +195,18 @@ const IdentityVerification = () => {
                   ? "Loading Camera..."
                   : "⚠️ Camera not detected"}
               </div>
-            ) : (
-              <Webcam
-                audio={false}
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                className={styles.webcam}
-                videoConstraints={{
-                  facingMode: "environment",
-                }}
-                imageSmoothing
-              />
-            )}
+            ) : ( */}
+            <Webcam
+              audio={false}
+              ref={webcamRef}
+              screenshotFormat="image/jpeg"
+              className={styles.webcam}
+              videoConstraints={{
+                facingMode: "environment",
+              }}
+              imageSmoothing
+            />
+
             <button
               onClick={() => captureImage(setIdImage)}
               className={styles.captureButton}
