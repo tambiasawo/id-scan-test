@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
   try {
     const data = await s3.upload(params).promise();
-    console.log(`File uploaded successfully`);
+    console.log(`File uploaded successfully`, data.Location);
     return NextResponse.json({ location: data.Location }); // Return the S3 URL
   } catch (err) {
     console.error("Upload error:", err);

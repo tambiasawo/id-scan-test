@@ -23,20 +23,11 @@ const IdentityVerification = () => {
   const token = searchParams.get("token");
   const router = useRouter();
 
-  React.useEffect(() => {
-    checkCameraStatus();
-    if (!token) {
-      // router.push("/404");
-    } else {
-      //verifyToken(token);
-    }
-  }, [checkCameraStatus, token]);
-
   const verifyToken = async (token: string) => {
     const activeToken = await getToken(token as string);
     if (!activeToken) router.push("/404");
   };
-
+  console.log({ idImage, selfieImage });
   const handleSubmitVerification = async () => {
     try {
       setError(null);
@@ -65,9 +56,11 @@ const IdentityVerification = () => {
     }
   };
 
-  async function checkCameraStatus() {
+  const checkCameraStatus = React.useCallback(async () => {
     try {
-      const cameraStream = await navigator.mediaDevices.getUserMedia();
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment" },
+      });
       if (cameraStream) {
         setIsCameraOn(true);
       } else {
@@ -76,7 +69,7 @@ const IdentityVerification = () => {
     } catch (error) {
       setIsCameraOn(false);
     }
-  }
+  }, []);
 
   const captureImage = (setImage: Dispatch<SetStateAction<string>>) => {
     const imageSrc: string = webcamRef.current?.getScreenshot() || "";
@@ -93,6 +86,16 @@ const IdentityVerification = () => {
     };
     if (file) reader.readAsDataURL(file);
   };
+
+  React.useEffect(() => {
+    checkCameraStatus();
+    if (!token) {
+      // router.push("/404");
+    } else {
+      //verifyToken(token);
+    }
+  }, [checkCameraStatus, token]);
+
   if (error)
     return (
       <div className={styles.errorContainer}>

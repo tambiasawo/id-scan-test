@@ -4,16 +4,17 @@ export async function POST(req: Request) {
   const { idImage, selfieImage } = await req.json();
 
   try {
-    const response = await fetch(`${process.env.API_PROD_URL}`, {
+    const response = await fetch(`${process.env.API_TEST_URL}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
+        "x-api-key": "vpkNiMQ39o3cNJD0YeHcW1LeQYVynQl08np7kzQD",
       },
       body: JSON.stringify({
         document: idImage,
         portrait: selfieImage,
-        clientId: "wLaylGidsf3mwrIUSeY9X4SpSBQp8QUV4oFfaUlU",
+        clientId: "5c26de07-c357-47a8-aee1-90acaa0e2202",
       }),
     });
     console.log({ response });

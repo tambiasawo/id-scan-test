@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const { last_name, dob, report_url, fileName, verification_status } =
     await req.json();
+  console.log({ last_name, dob, report_url, fileName, verification_status });
   try {
     const response = await fetch(
       `${process.env.WORDPRESS_BASE_API}/save-report/`,
