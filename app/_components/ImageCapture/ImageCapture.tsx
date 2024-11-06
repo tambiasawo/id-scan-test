@@ -54,7 +54,6 @@ const IdentityVerification = () => {
         return; // Stop execution if the response is not OK
       }
       const data = await response.json();
-      let tempData = {};
       setData(data);
 
       setLoading(false);
@@ -68,7 +67,7 @@ const IdentityVerification = () => {
 
   async function checkCameraStatus() {
     try {
-      let cameraStream = await navigator.mediaDevices.getUserMedia({
+      const cameraStream = await navigator.mediaDevices.getUserMedia({
         video: true,
       });
       if (cameraStream) {
@@ -290,7 +289,7 @@ const IdentityVerification = () => {
             setStep(1);
           }}
           className={styles.bottomText}
-          style={{marginTop:'20px'}}
+          style={{ marginTop: "20px" }}
         >
           Start all over
         </span>

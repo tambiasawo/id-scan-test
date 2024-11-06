@@ -187,9 +187,9 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
         doc.addImage(idImage, "JPEG", 10, yPosition + 17, 80, 80);
         yPosition += 111;
       } else if (field[0] === "Verification Result" && index === 0) {
-        let pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
-        let textWidth = doc.getTextWidth(field[1]); // Get the width of the text
-        let xPosition = (pageWidth - textWidth) / 2; // Calculate X position for centering
+        const pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
+        const textWidth = doc.getTextWidth(field[1]); // Get the width of the text
+        const xPosition = (pageWidth - textWidth) / 2; // Calculate X position for centering
         doc.setFontSize(20);
         doc.setFont("Helvetica", "bold");
         doc.setTextColor(verificationPassed ? "green" : "red");
@@ -240,6 +240,13 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
     }
     setLoading(false);
   };
+  if (error) {
+    return (
+      <div style={{ display: "grid", placeItems: "center" }}>
+        An error has occurred. Please try again
+      </div>
+    );
+  }
   return (
     <div className={styles.iframe_container}>
       {pdfUrl ? (
