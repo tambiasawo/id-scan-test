@@ -69,7 +69,7 @@ const IdentityVerification = () => {
     try {
       const cameraStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: isMobileDevice ? "user" : "environment",
+          facingMode: /* isMobileDevice ? "user" : */ "environment",
         },
       });
       if (cameraStream) {
