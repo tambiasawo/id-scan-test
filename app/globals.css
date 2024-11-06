@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  overflow-x: hidden;
+  overflow-x: hidden !important;
 }
 
 /* pages/404.module.css */
@@ -12,6 +12,8 @@ body {
   align-items: center;
   height: 100vh; /* Full viewport height */
   text-align: center;
+  overflow-x: hidden !important;
+
 }
 
 h1 {
