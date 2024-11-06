@@ -202,7 +202,7 @@ const IdentityVerification = () => {
               screenshotFormat="image/jpeg"
               className={styles.webcam}
               videoConstraints={{
-                facingMode: "environment",
+                facingMode: { exact: "environment" }, // Explicitly use the back camera
               }}
               imageSmoothing
             />
