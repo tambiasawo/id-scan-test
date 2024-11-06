@@ -67,11 +67,7 @@ const IdentityVerification = () => {
 
   async function checkCameraStatus() {
     try {
-      const cameraStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: /* isMobileDevice ? "user" : */ "environment",
-        },
-      });
+      const cameraStream = await navigator.mediaDevices.getUserMedia();
       if (cameraStream) {
         setIsCameraOn(true);
       } else {
