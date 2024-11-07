@@ -92,7 +92,7 @@ const IdentityVerification = () => {
     /* if (!token) {
       //router.push("/404");
     } else { */
-    verifyToken(token);
+    //verifyToken(token);
     //}
   }, [checkCameraStatus, token]);
 
