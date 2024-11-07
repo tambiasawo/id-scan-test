@@ -186,7 +186,7 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
           doc.setTextColor("#999999");
           doc.text(`${field[0]}`, 10, yPosition + 14);
 
-          doc.addImage(idImage, "JPEG", 10, yPosition + 17, 80, 80);
+          doc.addImage(idImage, "JPEG", 10, yPosition + 17, 70, 50);
           yPosition += 111;
         } else if (field[0] === "Verification Result" && index === 0) {
           const pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
