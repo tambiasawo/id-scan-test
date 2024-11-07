@@ -131,41 +131,41 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
     const verificationPassed = !verification_status
       .toLowerCase()
       .includes("not");
-    fields.push(["Verification Result", verification_status, 12]);
-    fields.push(["Face", idImage]);
+    fields.push(["Verification Result", verification_status, 0]);
+    fields.push(["Face", idImage,1]);
 
     data.aditionalData.filter((item: any) => {
       if (item["name"] === "Surname") {
-        fields.push([item.name, item.value, 0]);
+        fields.push([item.name, item.value, 2]);
         last_name = item.value;
       }
       if (item["name"] === "Given Names") {
-        fields.push([item.name, item.value, 1]);
+        fields.push([item.name, item.value, 3]);
       }
       if (item["name"] === "Date of Birth") {
-        fields.push([item.name, item.value, 2]);
+        fields.push([item.name, item.value, 4]);
         dob = item.value;
       }
       if (item["name"] === "Age") {
-        fields.push([item.name, item.value, 3]);
-      }
-      if (item["name"] === "Sex") {
-        fields.push([item.name, item.value, 4]);
-      }
-      if (item["name"] === "Nationality") {
         fields.push([item.name, item.value, 5]);
       }
-      if (item["name"] === "Document Number") {
+      if (item["name"] === "Sex") {
         fields.push([item.name, item.value, 6]);
       }
-      if (item["name"] === "Authority") {
-        fields.push([item.name, item.value, 11]);
-      }
-      if (item["name"] === "Date of Issue") {
+      if (item["name"] === "Nationality") {
         fields.push([item.name, item.value, 7]);
       }
-      if (item["name"] === "Date of Expiry") {
+      if (item["name"] === "Document Number") {
         fields.push([item.name, item.value, 8]);
+      }
+      if (item["name"] === "Authority") {
+        fields.push([item.name, item.value, 9]);
+      }
+      if (item["name"] === "Date of Issue") {
+        fields.push([item.name, item.value, 10]);
+      }
+      if (item["name"] === "Date of Expiry") {
+        fields.push([item.name, item.value, 11]);
       }
       if (item["name"] === "Issuing State Code") {
         fields.push([item.name, item.value, 9]);
