@@ -143,6 +143,7 @@ const IdentityVerification = () => {
               className={styles.bottomText}
               onClick={() => {
                 setShowQRCode(true);
+                setError(null)
               }}
             >
               {" "}
