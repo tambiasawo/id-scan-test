@@ -1,7 +1,9 @@
+import { NextResponse } from "next/server";
+
 export const getToken = async (token: string) => {
   try {
     if (!token) {
-      //return NextResponse.redirect(new URL("/404"));
+      return NextResponse.redirect(new URL("/404"));
     }
 
     // Pass the token as a query parameter

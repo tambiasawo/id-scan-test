@@ -11,7 +11,7 @@ const Custom404 = () => {
         Sorry, your token has expired or the URL entered is invalid. To access
         the product. Please purchase it again
       </p>
-      <Link href="/"> here</Link>
+      <Link href="https://rented123.com/">here</Link>
     </div>
   );
 };

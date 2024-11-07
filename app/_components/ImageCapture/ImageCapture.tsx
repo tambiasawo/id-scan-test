@@ -23,11 +23,11 @@ const IdentityVerification = () => {
   const token = searchParams.get("token");
   const router = useRouter();
 
-  const verifyToken = async (token: string) => {
+  const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
     if (!activeToken) router.push("/404");
   };
-  console.log({ idImage, selfieImage });
+
   const handleSubmitVerification = async () => {
     try {
       setError(null);
@@ -89,11 +89,11 @@ const IdentityVerification = () => {
 
   React.useEffect(() => {
     checkCameraStatus();
-    if (!token) {
-      // router.push("/404");
-    } else {
-      //verifyToken(token);
-    }
+    /* if (!token) {
+      //router.push("/404");
+    } else { */
+    verifyToken(token);
+    //}
   }, [checkCameraStatus, token]);
 
   if (error)
@@ -107,7 +107,7 @@ const IdentityVerification = () => {
             Please ensure you follow all necessary requirements when taking
             photo as shown{" "}
             <a
-              style={{ color: "red" }}
+              //style={{ color: "red" }}
               href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
               target="_blank"
             >
@@ -143,7 +143,7 @@ const IdentityVerification = () => {
               className={styles.bottomText}
               onClick={() => {
                 setShowQRCode(true);
-                setError(null)
+                setError(null);
               }}
             >
               {" "}
