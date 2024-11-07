@@ -2,6 +2,7 @@ import React from "react";
 import jsPDF from "jspdf";
 import useIsMobile, { logoImage } from "@/app/utils";
 import styles from "./PDFDownload.module.css";
+import Tooltip from "../Tooltip/Tooltip";
 
 const saveToS3 = async (
   PDFfile: Blob,
@@ -90,7 +91,9 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
   const isMobileDevice = useIsMobile();
+  const verification_status = data.verificationStatus;
 
+  const verificationPassed = !verification_status.toLowerCase().includes("not");
   const generatePDF = async () => {
     setLoading(true);
     const doc = new jsPDF();
@@ -126,13 +129,9 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
     const fields: [string, string, number?][] = [];
     let last_name = "",
       dob = "";
-    const verification_status = data.verificationStatus;
 
-    const verificationPassed = !verification_status
-      .toLowerCase()
-      .includes("not");
     fields.push(["Verification Result", verification_status, 0]);
-    fields.push(["Face", idImage,1]);
+    fields.push(["Face", idImage, 1]);
 
     data.aditionalData.filter((item: any) => {
       if (item["name"] === "Surname") {
@@ -170,12 +169,12 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       if (item["name"] === "Issuing State Code") {
         fields.push([item.name, item.value, 9]);
       }
-      if (item["name"] === "Nationality Code") {
+      if (item["name"] === "Issuing State Name") {
         fields.push([item.name, item.value, 10]);
       }
       return;
     });
-
+    console.log(fields);
     let yPosition = 72; // Starting Y position on the page
     fields
       .sort((a: any, b: any) => a[2] - b[2])
@@ -187,7 +186,7 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
           doc.text(`${field[0]}`, 10, yPosition + 14);
 
           doc.addImage(idImage, "JPEG", 10, yPosition + 17, 70, 50);
-          yPosition += 111;
+          yPosition += 90;
         } else if (field[0] === "Verification Result" && index === 0) {
           const pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
           const textWidth = doc.getTextWidth(field[1]); // Get the width of the text
@@ -234,7 +233,6 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       dob
     );
     const isValidURL = (s3Url: string) => /^https?:\/\/\S+\.\S+/.test(s3Url);
-    console.log(isValidURL(s3Url));
     if (isValidURL(s3Url)) {
       setPdfUrl(s3Url);
     } else {
@@ -249,12 +247,28 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       </div>
     );
   }
+  console.log(data);
   return (
     <div className={styles.iframe_container}>
       {pdfUrl ? (
         <>
+          {!verificationPassed && (
+            <Tooltip text="Your ID might be expired or the image quality was poor and we might have missed some details">
+              <p style={{  textDecoration: 'underline',
+  cursor: 'default'}}>Why did my ID verification fail ? </p>
+            </Tooltip>
+          )}
+
+          <iframe
+            src={pdfUrl}
+            width={isMobileDevice ? "80%" : "100%"}
+            height={isMobileDevice ? "350px" : "500px"}
+            title="Generated PDF"
+            style={{ border: "1px solid #ddd", marginTop: "20px" }}
+          />
           <a
             href={pdfUrl}
+            target="_blank"
             download="generated_report.pdf"
             style={{
               display: "inline-block",
@@ -269,13 +283,6 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
           >
             Download PDF
           </a>
-          <iframe
-            src={pdfUrl}
-            width={isMobileDevice ? "80%" : "100%"}
-            height={isMobileDevice ? "350px" : "500px"}
-            title="Generated PDF"
-            style={{ border: "1px solid #ddd", marginTop: "20px" }}
-          />
         </>
       ) : (
         <button
