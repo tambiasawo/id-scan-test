@@ -26,9 +26,7 @@ const IdentityVerification = () => {
 
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
-    console.log("verify token " + activeToken);
     if (!activeToken) {
-      console.log("there is no active token");
       router.push("/404");
     } else setUserVerified(true);
   };
@@ -95,13 +93,12 @@ const IdentityVerification = () => {
   React.useEffect(() => {
     checkCameraStatus();
     if (!token) {
-      console.log("use effect: no token");
       router.push("/404");
     } else {
       verifyToken(token);
     }
   }, [checkCameraStatus, token]);
-  console.log({ token, userVerified });
+
   if (error)
     return (
       <div className={styles.errorContainer}>
