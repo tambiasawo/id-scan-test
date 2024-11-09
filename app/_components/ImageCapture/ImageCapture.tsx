@@ -26,8 +26,8 @@ const IdentityVerification = () => {
 
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
-    //if (!activeToken) router.push("/404");
-    // else setUserVerified(true);
+    if (!activeToken) router.push("/404");
+    else setUserVerified(true);
   };
 
   const handleSubmitVerification = async () => {
@@ -91,11 +91,11 @@ const IdentityVerification = () => {
 
   React.useEffect(() => {
     checkCameraStatus();
-    if (!token) {
+    /*  if (!token) {
       router.push("/404");
     } else {
       verifyToken(token);
-    }
+    } */
   }, [checkCameraStatus, token]);
   console.log({ userVerified });
   if (error)
