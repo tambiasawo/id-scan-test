@@ -18,6 +18,7 @@ const IdentityVerification = () => {
   const [data, setData] = useState([]);
   const [showQRCode, setShowQRCode] = React.useState(false);
   const [error, setError] = useState(null);
+  const [userVerified, setUserVerified] = useState(false);
   const [isCameraOn, setIsCameraOn] = useState<boolean | undefined>(undefined);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -26,6 +27,7 @@ const IdentityVerification = () => {
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
     if (!activeToken) router.push("/404");
+    else setUserVerified(true);
   };
 
   const handleSubmitVerification = async () => {
@@ -89,13 +91,13 @@ const IdentityVerification = () => {
 
   React.useEffect(() => {
     checkCameraStatus();
-    /* if (!token) {
-      //router.push("/404");
-    } else { */
-    //verifyToken(token);
-    //}
+    if (!token) {
+      router.push("/404");
+    } else {
+      verifyToken(token);
+    }
   }, [checkCameraStatus, token]);
-
+  console.log({ userVerified });
   if (error)
     return (
       <div className={styles.errorContainer}>
@@ -156,158 +158,159 @@ const IdentityVerification = () => {
         </div>
       </div>
     );
-  return (
-    <div className={styles.container}>
-      {loading && (
-        <div className={styles.loadingOverlay}>
-          <div className={styles.spinner}></div>
-        </div>
-      )}
-
-      <div className={styles.stepContainer}>
-        {!isMobileDevice && step === 1 && (
-          <span
-            className={styles.bottomText}
-            onClick={() => {
-              setShowQRCode(true);
-            }}
-          >
-            For a better experience switch to your phone
-          </span>
+  if (userVerified)
+    return (
+      <div className={styles.container}>
+        {loading && (
+          <div className={styles.loadingOverlay}>
+            <div className={styles.spinner}></div>
+          </div>
         )}
-        {step === 1 && !showQRCode && (
-          <div className={styles.step}>
-            <h2 className={styles.header}>
-              Step 1: Capture or Upload ID Document
-            </h2>
+
+        <div className={styles.stepContainer}>
+          {!isMobileDevice && step === 1 && (
             <span
-              style={{
-                fontSize: "13px",
-                textAlign: "center",
-                marginBottom: "9px",
+              className={styles.bottomText}
+              onClick={() => {
+                setShowQRCode(true);
               }}
             >
-              Please ensure your ID fills no more than 70% of the capture area
+              For a better experience switch to your phone
             </span>
-            {/* Webcam Capture */}
-            {!isMobileDevice ? (
-              !isCameraOn ? (
-                <div
-                  className={styles.webcam}
-                  style={{
-                    height: "200px",
-                    display: "grid",
-                    placeItems: "center",
-                  }}
-                >
-                  {isCameraOn === undefined
-                    ? "Loading Camera..."
-                    : "⚠️ Camera not detected"}
-                </div>
+          )}
+          {step === 1 && !showQRCode && (
+            <div className={styles.step}>
+              <h2 className={styles.header}>
+                Step 1: Capture or Upload ID Document
+              </h2>
+              <span
+                style={{
+                  fontSize: "13px",
+                  textAlign: "center",
+                  marginBottom: "9px",
+                }}
+              >
+                Please ensure your ID fills no more than 70% of the capture area
+              </span>
+              {/* Webcam Capture */}
+              {!isMobileDevice ? (
+                !isCameraOn ? (
+                  <div
+                    className={styles.webcam}
+                    style={{
+                      height: "200px",
+                      display: "grid",
+                      placeItems: "center",
+                    }}
+                  >
+                    {isCameraOn === undefined
+                      ? "Loading Camera..."
+                      : "⚠️ Camera not detected"}
+                  </div>
+                ) : (
+                  <Webcam
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    className={styles.webcam}
+                    imageSmoothing
+                  />
+                )
               ) : (
                 <Webcam
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
                   className={styles.webcam}
-                  imageSmoothing
-                />
-              )
-            ) : (
-              <Webcam
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                className={styles.webcam}
-                videoConstraints={{
-                  facingMode: "environment", // Back camera for mobile and front for laptops
-                }}
-                imageSmoothing
-              />
-            )}
-            <button
-              onClick={() => captureImage(setIdImage)}
-              className={styles.captureButton}
-            >
-              Capture ID
-            </button>
-
-            {/* Upload Option */}
-            <p className={styles.orText}>or</p>
-            <div className={styles.uploadContainer}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleUpload}
-                className={styles.uploadInput}
-              />
-            </div>
-          </div>
-        )}
-        {showQRCode && (
-          <QRCode url={"https://main.d3vmd0xhcxraa2.amplifyapp.com/"} />
-        )}{" "}
-        {step === 2 && (
-          <div className={styles.step}>
-            <h2 className={styles.header}>Step 2: Capture Selfie</h2>
-            {!selfieImage ? (
-              <>
-                <Webcam
-                  audio={false}
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  className={styles.faceWebcam}
                   videoConstraints={{
-                    facingMode: "user", // Use the front camera for selfies
+                    facingMode: "environment", // Back camera for mobile and front for laptops
                   }}
                   imageSmoothing
                 />
+              )}
+              <button
+                onClick={() => captureImage(setIdImage)}
+                className={styles.captureButton}
+              >
+                Capture ID
+              </button>
 
-                <button
-                  onClick={() => captureImage(setSelfieImage)}
-                  className={styles.captureButton}
-                >
-                  Capture Selfie
-                </button>
-              </>
-            ) : (
-              <img
-                src={selfieImage}
-                alt="selfie"
-                className={styles.faceWebcam}
-              />
-            )}
+              {/* Upload Option */}
+              <p className={styles.orText}>or</p>
+              <div className={styles.uploadContainer}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUpload}
+                  className={styles.uploadInput}
+                />
+              </div>
+            </div>
+          )}
+          {showQRCode && (
+            <QRCode url={"https://main.d3vmd0xhcxraa2.amplifyapp.com/"} />
+          )}{" "}
+          {step === 2 && (
+            <div className={styles.step}>
+              <h2 className={styles.header}>Step 2: Capture Selfie</h2>
+              {!selfieImage ? (
+                <>
+                  <Webcam
+                    audio={false}
+                    ref={webcamRef}
+                    screenshotFormat="image/jpeg"
+                    className={styles.faceWebcam}
+                    videoConstraints={{
+                      facingMode: "user", // Use the front camera for selfies
+                    }}
+                    imageSmoothing
+                  />
+
+                  <button
+                    onClick={() => captureImage(setSelfieImage)}
+                    className={styles.captureButton}
+                  >
+                    Capture Selfie
+                  </button>
+                </>
+              ) : (
+                <img
+                  src={selfieImage}
+                  alt="selfie"
+                  className={styles.faceWebcam}
+                />
+              )}
+            </div>
+          )}
+        </div>
+
+        {idImage && selfieImage && step === 2 && (
+          <button
+            onClick={handleSubmitVerification}
+            className={styles.submitButton}
+          >
+            Submit for Verification
+          </button>
+        )}
+
+        {idImage && step == 2 && (
+          <span
+            onClick={() => {
+              setSelfieImage("");
+              setIdImage("");
+              setStep(1);
+            }}
+            className={styles.bottomText}
+            style={{ marginTop: "20px" }}
+          >
+            Start all over
+          </span>
+        )}
+        {step === 3 && (
+          <div className={styles.iframeParentContainer}>
+            <PdfGenerator data={data} idImage={idImage} />
           </div>
         )}
       </div>
-
-      {idImage && selfieImage && step === 2 && (
-        <button
-          onClick={handleSubmitVerification}
-          className={styles.submitButton}
-        >
-          Submit for Verification
-        </button>
-      )}
-
-      {idImage && step == 2 && (
-        <span
-          onClick={() => {
-            setSelfieImage("");
-            setIdImage("");
-            setStep(1);
-          }}
-          className={styles.bottomText}
-          style={{ marginTop: "20px" }}
-        >
-          Start all over
-        </span>
-      )}
-      {step === 3 && (
-        <div className={styles.iframeParentContainer}>
-          <PdfGenerator data={data} idImage={idImage} />
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default IdentityVerification;

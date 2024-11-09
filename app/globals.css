@@ -5,15 +5,15 @@ body {
 
 /* pages/404.module.css */
 
-.container {
+.error-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
   height: 100vh; /* Full viewport height */
   text-align: center;
-  overflow-x: hidden !important;
-
+  margin: 40px auto;
+  max-width: 80%;
 }
 
 h1 {
