@@ -18,7 +18,7 @@ const IdentityVerification = () => {
   const [data, setData] = useState([]);
   const [showQRCode, setShowQRCode] = React.useState(false);
   const [error, setError] = useState(null);
-  const [userVerified, setUserVerified] = useState(true); //change to false
+  const [userVerified, setUserVerified] = useState(false); //change to false
   const [isCameraOn, setIsCameraOn] = useState<boolean | undefined>(undefined);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -27,7 +27,8 @@ const IdentityVerification = () => {
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
     console.log("verify token " + activeToken);
-    if (!activeToken) router.push("/404");
+    if (!activeToken)
+      console.log("there is no active token"); //router.push("/404");
     else setUserVerified(true);
   };
 
@@ -93,8 +94,8 @@ const IdentityVerification = () => {
   React.useEffect(() => {
     checkCameraStatus();
     if (!token) {
-      console.log("no token");
-      router.push("/404");
+      console.log("use effect: no token");
+      //router.push("/404");
     } else {
       verifyToken(token);
     }
