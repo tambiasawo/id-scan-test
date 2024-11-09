@@ -27,9 +27,10 @@ const IdentityVerification = () => {
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
     console.log("verify token " + activeToken);
-    if (!activeToken)
-      console.log("there is no active token"); //router.push("/404");
-    else setUserVerified(true);
+    if (!activeToken) {
+      console.log("there is no active token");
+      router.push("/404");
+    } else setUserVerified(true);
   };
 
   const handleSubmitVerification = async () => {
@@ -95,7 +96,7 @@ const IdentityVerification = () => {
     checkCameraStatus();
     if (!token) {
       console.log("use effect: no token");
-      //router.push("/404");
+      router.push("/404");
     } else {
       verifyToken(token);
     }
