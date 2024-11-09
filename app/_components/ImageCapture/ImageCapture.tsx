@@ -28,7 +28,8 @@ const IdentityVerification = () => {
     const activeToken = await getToken(token as string);
     if (!activeToken) {
       router.push("/404");
-    } else setUserVerified(true);
+    } else if (activeToken[0].product !== "idscan") router.push("/404");
+    else setUserVerified(true);
   };
 
   const handleSubmitVerification = async () => {
