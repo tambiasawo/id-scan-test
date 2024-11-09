@@ -97,7 +97,7 @@ const IdentityVerification = () => {
       verifyToken(token);
     } */
   }, [checkCameraStatus, token]);
-  console.log({ userVerified });
+  console.log({ token, userVerified });
   if (error)
     return (
       <div className={styles.errorContainer}>
