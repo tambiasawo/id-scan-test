@@ -18,7 +18,7 @@ const IdentityVerification = () => {
   const [data, setData] = useState([]);
   const [showQRCode, setShowQRCode] = React.useState(false);
   const [error, setError] = useState(null);
-  const [userVerified, setUserVerified] = useState(false);
+  const [userVerified, setUserVerified] = useState(true); //change to false
   const [isCameraOn, setIsCameraOn] = useState<boolean | undefined>(undefined);
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
@@ -26,8 +26,8 @@ const IdentityVerification = () => {
 
   const verifyToken = async (token: string | null) => {
     const activeToken = await getToken(token as string);
-    if (!activeToken) router.push("/404");
-    else setUserVerified(true);
+    //if (!activeToken) router.push("/404");
+    // else setUserVerified(true);
   };
 
   const handleSubmitVerification = async () => {
