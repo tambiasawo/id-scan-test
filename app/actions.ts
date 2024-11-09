@@ -1,28 +1,23 @@
-import { NextResponse } from "next/server";
-
 export const getToken = async (token: string) => {
   try {
     if (!token) {
-      return NextResponse.redirect(new URL("/404"));
+      return null; // Indicate that there’s no valid token
     }
 
-    // Pass the token as a query parameter
     const response = await fetch(
-      `/api/get-token/?token=${encodeURIComponent(token)}`
+      `${
+        process.env.NEXT_PUBLIC_BASE_URL
+      }/api/get-token/?token=${encodeURIComponent(token)}`
     );
 
     if (!response.ok) {
-      const errorData = await response.json();
-      /*  if (response.status === 404) {
-        return NextResponse.redirect("/404");
-      } */
-      console.log("Invalid token", errorData.message);
-      return undefined;
-    } else {
-      const responseData = await response.json();
-      return responseData;
+      return null; // Indicate invalid token
     }
+
+    const responseData = await response.json();
+    return responseData;
   } catch (error) {
     console.error("Error occurred while fetching token:", error);
+    return null; // Return null if an error occurred
   }
 };
