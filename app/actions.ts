@@ -5,9 +5,7 @@ export const getToken = async (token: string) => {
     }
 
     const response = await fetch(
-      `${
-        process.env.NEXT_PUBLIC_BASE_URL
-      }/api/get-token/?token=${encodeURIComponent(token)}`
+      `/api/get-token/?token=${encodeURIComponent(token)}`
     );
 
     if (!response.ok) {
