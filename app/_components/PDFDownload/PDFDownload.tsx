@@ -174,7 +174,6 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       }
       return;
     });
-    console.log(fields);
     let yPosition = 72; // Starting Y position on the page
     fields
       .sort((a: any, b: any) => a[2] - b[2])
