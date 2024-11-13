@@ -1,0 +1,25 @@
+/* pages/404.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin-top: 40px;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  text-align: center;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #ff0000; /* Red color for the error */
+}
+
+p {
+  margin: 1rem 0;
+}
+
+a {
+  color: #0070f3; /* Link color */
+  text-decoration: underline;
+}
