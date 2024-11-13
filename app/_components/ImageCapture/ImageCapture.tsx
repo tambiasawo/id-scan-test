@@ -24,13 +24,16 @@ const IdentityVerification = () => {
   const token = searchParams.get("token");
   const router = useRouter();
 
-  const verifyToken = async (token: string | null) => {
-    const activeToken = await getToken(token as string);
-    if (!activeToken) {
-      router.push("/404");
-    } else if (activeToken[0].product !== "idscan") router.push("/404");
-    else setUserVerified(true);
-  };
+  const verifyToken = React.useCallback(
+    async (token: string | null) => {
+      const activeToken = await getToken(token as string);
+      if (!activeToken) {
+        router.push("/404");
+      } else if (activeToken[0].product !== "equifax") router.push("/404");
+      else setUserVerified(true);
+    },
+    [router]
+  );
 
   const handleSubmitVerification = async () => {
     try {
@@ -98,7 +101,7 @@ const IdentityVerification = () => {
     } else {
       verifyToken(token);
     }
-  }, [checkCameraStatus, token, verifyToken]);
+  }, [checkCameraStatus, token, verifyToken, router]);
 
   if (error)
     return (
