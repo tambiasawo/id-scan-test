@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import useIsMobile, { logoImage } from "@/app/utils";
 import styles from "./PDFDownload.module.css";
 import Tooltip from "../Tooltip/Tooltip";
+import Accordion from "../Accordion/Accordion";
 
 const saveToS3 = async (
   PDFfile: Blob,
@@ -246,16 +247,31 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       </div>
     );
   }
-  console.log(data);
   return (
     <div className={styles.iframe_container}>
       {pdfUrl ? (
         <>
           {!verificationPassed && (
-            <Tooltip text="Your ID might be expired or the image quality was poor and we might have missed some details">
-              <p style={{  textDecoration: 'underline',
-  cursor: 'default'}}>Why did my ID verification fail ? </p>
-            </Tooltip>
+            <>
+              <Accordion
+                title="Why did my ID verification fail ?"
+                content={
+                  <ul>
+                    <li>
+                      The image quality might be poor and we might have missed
+                      some details
+                    </li>
+                    <li>Your ID might be expired </li>
+                  </ul>
+                }
+              />
+              <button
+                className={styles.tryAgainButton}
+                onClick={() => window.location.reload()}
+              >
+                Try Again
+              </button>
+            </>
           )}
 
           <iframe
