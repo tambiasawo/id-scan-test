@@ -1,4 +1,3 @@
-// pages/404.js
 
 import Link from "next/link";
 
@@ -6,10 +5,16 @@ const Custom404 = () => {
   return (
     <div className={"error-container"}>
       <h1>404 - Page Not Found</h1>
-      <p>
-        Sorry, your token has expired or the URL entered is invalid. To access
-        the product. Please purchase it again{" "}
-        <Link href="https://rented123.com/">here</Link>
+      <p style={{ lineHeight: "1.6" }}>
+        We're sorry, but the page you're looking for doesn't exist, or the link
+        is invalid. If your access token has expired, you can purchase the
+        product again by clicking{" "}
+        <Link
+          href="https://rented123.com/product/scandit-id-scan/"
+          target="_blank"
+        >
+          here
+        </Link>
       </p>
     </div>
   );
