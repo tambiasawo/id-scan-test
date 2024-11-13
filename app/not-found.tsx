@@ -16,7 +16,7 @@ const Custom404 = () => {
     >
       <h1 style={{ color: "red" }}>Page Not Found</h1>
       <p style={{ lineHeight: "1.6" }}>
-        We're sorry, but the page you're looking for doesn't exist, or the link
+        We are sorry, but the page you&apos;re looking for doesn&apos;t exist, or the link
         is invalid. If your access token has expired, you can purchase the
         product again by clicking{" "}
         <Link
