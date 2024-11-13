@@ -5,27 +5,3 @@ body {
 
 /* pages/404.module.css */
 
-.error-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  height: 100vh; /* Full viewport height */
-  text-align: center;
-  margin: 40px auto;
-  max-width: 80%;
-}
-
-h1 {
-  font-size: 2rem;
-  color: #ff0000; /* Red color for the error */
-}
-
-p {
-  margin: 1rem 0;
-}
-
-a {
-  color: #0070f3; /* Link color */
-  text-decoration: underline;
-}
