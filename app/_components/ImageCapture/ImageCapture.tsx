@@ -98,7 +98,7 @@ const IdentityVerification = () => {
     } else {
       verifyToken(token);
     }
-  }, [checkCameraStatus, token]);
+  }, [checkCameraStatus, token, verifyToken]);
 
   if (error)
     return (
