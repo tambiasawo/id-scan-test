@@ -2,7 +2,6 @@ import React from "react";
 import jsPDF from "jspdf";
 import useIsMobile, { logoImage } from "@/app/utils";
 import styles from "./PDFDownload.module.css";
-import Tooltip from "../Tooltip/Tooltip";
 import Accordion from "../Accordion/Accordion";
 
 const saveToS3 = async (
@@ -87,7 +86,15 @@ const saves3LinkInWordPress = async (
   }
 };
 
-const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
+const PdfGenerator = ({
+  data,
+  idImage,
+  activeToken,
+}: {
+  data: any;
+  idImage: string;
+  activeToken: string;
+}) => {
   const [pdfUrl, setPdfUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
@@ -222,9 +229,12 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
           yPosition += 22;
         }
       });
-
+    doc.setProperties({
+      title: "ID Verification Result",
+      author: "Rented123",
+      keywords: activeToken,
+    });
     const pdfBlob = doc.output("blob");
-
     const s3Url = await saves3LinkInWordPress(
       pdfBlob,
       verificationPassed,
@@ -247,33 +257,50 @@ const PdfGenerator = ({ data, idImage }: { data: any; idImage: string }) => {
       </div>
     );
   }
+  if (!verificationPassed)
+    return (
+      <>
+        <h3>Sorry, we could nott verify your ID</h3>
+        <Accordion
+          title="Why did my ID verification fail ?"
+          content={
+            <div>
+              <ul>
+                <li>
+                  The image quality might be poor and we might have missed some
+                  details. In this case, using a phone camera might help.
+                </li>
+                <li>Your ID might be expired or</li>
+                <li>It might have failed some security checks</li>
+
+              </ul>
+              <p >
+                Please ensure you follow all necessary requirements when taking
+                photo as shown{" "}
+                <a
+                  //style={{ color: "red" }}
+                  href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
+                  target="_blank"
+                >
+                  here
+                </a>{" "}
+              </p>
+            </div>
+          }
+        />
+        <button
+          className={styles.tryAgainButton}
+          onClick={() => window.location.reload()}
+        >
+          Try Again
+        </button>
+      </>
+    );
+
   return (
     <div className={styles.iframe_container}>
       {pdfUrl ? (
         <>
-          {!verificationPassed && (
-            <>
-              <Accordion
-                title="Why did my ID verification fail ?"
-                content={
-                  <ul>
-                    <li>
-                      The image quality might be poor and we might have missed
-                      some details
-                    </li>
-                    <li>Your ID might be expired </li>
-                  </ul>
-                }
-              />
-              <button
-                className={styles.tryAgainButton}
-                onClick={() => window.location.reload()}
-              >
-                Try Again
-              </button>
-            </>
-          )}
-
           <iframe
             src={pdfUrl}
             width={isMobileDevice ? "80%" : "100%"}
