@@ -17,7 +17,6 @@ export async function POST(req: Request) {
         clientId: process.env.CLIENT_ID as string,
       }),
     });
-    console.log({ response });
     if (!response.ok) {
       const error = await response.json();
       console.log({ error });
