@@ -20,6 +20,7 @@ const IdentityVerification = () => {
   const [error, setError] = useState(null);
   const [userVerified, setUserVerified] = useState(false); //change to false
   const [isCameraOn, setIsCameraOn] = useState<boolean | undefined>(undefined);
+  const [activeToken, setActiveToken] = useState("");
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
@@ -29,8 +30,11 @@ const IdentityVerification = () => {
       const activeToken = await getToken(token as string);
       if (!activeToken) {
         router.push("/404");
-      } else if (activeToken[0].product !== "equifax") router.push("/404");
-      else setUserVerified(true);
+      } else if (activeToken[0].product !== "idscan") router.push("/404");
+      else {
+        setActiveToken(activeToken[0]?.token);
+        setUserVerified(true);
+      }
     },
     [router]
   );
@@ -311,7 +315,11 @@ const IdentityVerification = () => {
         )}
         {step === 3 && (
           <div className={styles.iframeParentContainer}>
-            <PdfGenerator data={data} idImage={idImage} />
+            <PdfGenerator
+              data={data}
+              idImage={idImage}
+              activeToken={activeToken}
+            />
           </div>
         )}
       </div>
