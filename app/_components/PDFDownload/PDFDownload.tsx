@@ -232,7 +232,7 @@ const PdfGenerator = ({
     doc.setProperties({
       title: "ID Verification Result",
       author: "Rented123",
-      keywords: activeToken,
+      keywords: `${activeToken} ${last_name} ${dob}`,
     });
     const pdfBlob = doc.output("blob");
     const s3Url = await saves3LinkInWordPress(
@@ -272,9 +272,8 @@ const PdfGenerator = ({
                 </li>
                 <li>Your ID might be expired or</li>
                 <li>It might have failed some security checks</li>
-
               </ul>
-              <p >
+              <p>
                 Please ensure you follow all necessary requirements when taking
                 photo as shown{" "}
                 <a
