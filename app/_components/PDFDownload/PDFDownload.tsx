@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import useIsMobile, { logoImage } from "@/app/utils";
 import styles from "./PDFDownload.module.css";
 import Accordion from "../Accordion/Accordion";
+import { emailPDF } from "@/app/actions";
 
 const saveToS3 = async (
   PDFfile: Blob,
@@ -136,6 +137,7 @@ const PdfGenerator = ({
     doc.setFontSize(12);
     const fields: [string, string, number?][] = [];
     let last_name = "",
+      first_name = "",
       dob = "";
 
     fields.push(["Verification Result", verification_status, 0]);
@@ -148,6 +150,7 @@ const PdfGenerator = ({
       }
       if (item["name"] === "Given Names") {
         fields.push([item.name, item.value, 3]);
+        first_name = item.value;
       }
       if (item["name"] === "Date of Birth") {
         fields.push([item.name, item.value, 4]);
@@ -242,6 +245,8 @@ const PdfGenerator = ({
       last_name,
       dob
     );
+    emailPDF({ last_name, first_name, dob });
+
     const isValidURL = (s3Url: string) => /^https?:\/\/\S+\.\S+/.test(s3Url);
     if (isValidURL(s3Url)) {
       setPdfUrl(s3Url);

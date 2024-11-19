@@ -249,10 +249,10 @@ const IdentityVerification = () => {
               </button>
 
               {/* Upload Option */}
-              <p className={styles.orText}>or</p>
+             {/*  <p className={styles.orText}>or</p>
               <div>
                 <DragAndDrop onFileDrop={handleFileDrop} />
-              </div>
+              </div> */}
             </div>
           )}
           {showQRCode && (

@@ -19,3 +19,15 @@ export const getToken = async (token: string) => {
     return null; // Return null if an error occurred
   }
 };
+
+export const emailPDF = async (userDetails: {
+  last_name: string;
+  first_name: string;
+  dob: string;
+}) => {
+  await fetch("/api/send-email/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userDetails }),
+  });
+};

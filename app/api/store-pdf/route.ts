@@ -1,22 +1,23 @@
 import { NextResponse } from "next/server";
-import AWS from "aws-sdk";
-const AWS_ACCESS_KEY_ID = process.env.ACCESS_KEY_ID;
-const AWS_SECRET_ACCESS_KEY = process.env.ACCESS_KEY_SECRET;
-const AWS_REGION = process.env.REGION;
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+
+const AWS_ACCESS_KEY_ID = process.env.ACCESS_KEY_ID!;
+const AWS_SECRET_ACCESS_KEY = process.env.ACCESS_KEY_SECRET!;
+const AWS_REGION = process.env.REGION!;
 
 export async function POST(req: Request) {
-  AWS.config.update({
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    region: AWS_REGION,
-  });
-
   const { PDFfile, fileName, verificationPassed } = await req.json();
 
   // Convert the base64 or other file data to a Buffer
   const pdfBuffer = Buffer.from(PDFfile, "base64"); // Adjust encoding if necessary
 
-  const s3 = new AWS.S3();
+  const s3 = new S3Client({
+    region: AWS_REGION,
+    credentials: {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
+  });
   const params = {
     Bucket: verificationPassed
       ? "verified-id-reports"
@@ -27,9 +28,11 @@ export async function POST(req: Request) {
   };
 
   try {
-    const data = await s3.upload(params).promise();
-    console.log(`File uploaded successfully`, data.Location);
-    return NextResponse.json({ location: data.Location }); // Return the S3 URL
+    const data = await s3.send(new PutObjectCommand(params));
+    console.log("File uploaded successfully:", data);
+    return NextResponse.json({
+      location: `https://${params.Bucket}.s3.${AWS_REGION}.amazonaws.com/${fileName}`,
+    });
   } catch (err) {
     console.error("Upload error:", err);
     return NextResponse.json(

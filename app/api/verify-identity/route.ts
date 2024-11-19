@@ -18,6 +18,12 @@ export async function POST(req: Request) {
       }),
     });
     if (!response.ok) {
+      console.log(`idImage size: ${(idImage.length * 3) / 4 / 1024 / 1024} MB`);
+      console.log(
+        `selfieImage size: ${(selfieImage.length * 3) / 4 / 1024 / 1024} MB`
+      );
+
+      console.log({ response });
       const error = await response.json();
       console.log({ error });
       return NextResponse.json(
