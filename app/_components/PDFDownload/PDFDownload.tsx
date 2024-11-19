@@ -284,6 +284,10 @@ const PdfGenerator = ({
                   here
                 </a>{" "}
               </p>
+              <p>
+                If you still have issues please{" "}
+                <a href="mailto:rob@rented123.com">contact us</a>
+              </p>
             </div>
           }
         />

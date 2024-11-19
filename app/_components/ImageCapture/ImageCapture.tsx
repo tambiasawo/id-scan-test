@@ -204,7 +204,7 @@ const IdentityVerification = () => {
                   marginBottom: "9px",
                 }}
               >
-                Please ensure your ID fills between 70% to 80% max of the
+                Please ensure your ID fills no more than 60% - 70% of the
                 capture area
               </span>
               {/* Webcam Capture */}
