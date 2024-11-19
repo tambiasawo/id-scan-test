@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/app/actions";
 import QRCode from "../QRCode/QRCode";
 import useIsMobile from "@/app/utils";
+import DragAndDrop from "../DragAndDrop";
 
 const IdentityVerification = () => {
   const isMobileDevice = useIsMobile();
@@ -88,8 +89,8 @@ const IdentityVerification = () => {
     if (imageSrc) setStep(2);
   };
 
-  const handleUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files && event.target.files[0];
+  const handleFileDrop = (file: File) => {
+    console.log("Files received:", file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setIdImage(reader.result as string);
@@ -244,13 +245,8 @@ const IdentityVerification = () => {
 
               {/* Upload Option */}
               <p className={styles.orText}>or</p>
-              <div className={styles.uploadContainer}>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleUpload}
-                  className={styles.uploadInput}
-                />
+              <div>
+                <DragAndDrop onFileDrop={handleFileDrop} />
               </div>
             </div>
           )}
