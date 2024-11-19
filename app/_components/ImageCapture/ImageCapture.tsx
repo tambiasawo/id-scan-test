@@ -163,7 +163,11 @@ const IdentityVerification = () => {
             </span>
           )}
           {showQRCode && (
-            <QRCode url={"https://main.d3vmd0xhcxraa2.amplifyapp.com/"} />
+            <QRCode
+              url={
+                "https://services.idscan.rented123.com/?token=bf641dab9ca0df845a62f88a5d28161c"
+              }
+            />
           )}{" "}
         </div>
       </div>
@@ -200,7 +204,8 @@ const IdentityVerification = () => {
                   marginBottom: "9px",
                 }}
               >
-                Please ensure your ID fills no more than 70% of the capture area
+                Please ensure your ID fills between 70% to 80% max of the
+                capture area
               </span>
               {/* Webcam Capture */}
               {!isMobileDevice ? (

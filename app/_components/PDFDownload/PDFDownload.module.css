@@ -18,3 +18,7 @@
   max-width: 300px;
   margin-top: 15px;
 }
+
+.tryAgainButton:hover {
+  opacity: 0.85;
+}

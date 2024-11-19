@@ -104,6 +104,9 @@
   width: 100%;
   max-width: 200px;
 }
+.captureButton:hover{
+  opacity: 0.85;
+}
 
 .orText {
   margin: 10px 0;
