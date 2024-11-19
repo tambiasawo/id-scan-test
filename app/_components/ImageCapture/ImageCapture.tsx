@@ -251,7 +251,9 @@ const IdentityVerification = () => {
             </div>
           )}
           {showQRCode && (
-            <QRCode url={"https://main.d3vmd0xhcxraa2.amplifyapp.com/"} />
+            <QRCode
+              url={`https://services.idscan.rented123.com/?token=${activeToken}`}
+            />
           )}{" "}
           {step === 2 && (
             <div className={styles.step}>
