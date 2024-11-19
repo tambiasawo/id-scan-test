@@ -324,22 +324,31 @@ const PdfGenerator = ({
           >
             Download PDF
           </a>
-          <span style={{fontSize: "12px",marginTop:"20px", textAlign: "center"}}>
-            By downloading your report, you agree to us storing your information on our
-            systems securely. Please for questions, refer to our {" "}
-            <a
-              href="https://dev.rented123.com/wp-content/uploads/2024/11/Rented123.com-privacy-and-data-collection-consent.docx.pdf"
-              target="_blank"
-            >
-              privacy policy
-            </a>{" "}
-            and the{" "}
-            <a
-              href="https://dev.rented123.com/wp-content/uploads/2024/11/BC-Real-Estate-Privacy-Consent.pdf"
-              target="_blank"
-            >
-              BC Real Estate privacy policy
-            </a>
+          <span
+            style={{ fontSize: "12px", marginTop: "20px", textAlign: "center" }}
+          >
+            <p>
+              {" "}
+              By downloading your report, you agree to us storing your
+              information on our systems securely.
+            </p>
+            <p>
+              {" "}
+              Please for questions, refer to our{" "}
+              <a
+                href="https://dev.rented123.com/wp-content/uploads/2024/11/Rented123.com-privacy-and-data-collection-consent.docx.pdf"
+                target="_blank"
+              >
+                privacy policy
+              </a>{" "}
+              and the{" "}
+              <a
+                href="https://dev.rented123.com/wp-content/uploads/2024/11/BC-Real-Estate-Privacy-Consent.pdf"
+                target="_blank"
+              >
+                BC Real Estate privacy policy
+              </a>
+            </p>
           </span>
         </>
       ) : (
