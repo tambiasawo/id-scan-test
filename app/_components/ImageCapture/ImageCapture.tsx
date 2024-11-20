@@ -54,6 +54,7 @@ const IdentityVerification = () => {
         const errorData = await response.json();
         console.log("Verification error:", errorData.message);
         setError(errorData.message);
+        setLoading(false);
         return; // Stop execution if the response is not OK
       }
       const data = await response.json();
@@ -64,7 +65,6 @@ const IdentityVerification = () => {
     } catch (err) {
       setLoading(false);
       console.log("Verification failed:", err);
-      setLoading(false);
     }
   };
 
@@ -156,6 +156,9 @@ const IdentityVerification = () => {
               onClick={() => {
                 setShowQRCode(true);
                 setError(null);
+                setSelfieImage("");
+                setIdImage("");
+                setStep(0);
               }}
             >
               {" "}
