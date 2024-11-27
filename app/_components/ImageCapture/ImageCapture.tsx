@@ -97,7 +97,7 @@ const IdentityVerification = () => {
     };
     if (file) reader.readAsDataURL(file);
   };
-console.log({idImage})
+  console.log({ idImage });
   React.useEffect(() => {
     checkCameraStatus();
     if (!token) {
@@ -250,11 +250,11 @@ console.log({idImage})
                 Capture ID
               </button>
 
-              {/* Upload Option */}
+              {/* Upload Option 
               <p className={styles.orText}>or</p>
               <div>
                 <DragAndDrop onFileDrop={handleFileDrop} />
-              </div>
+              </div>*/}
             </div>
           )}
           {showQRCode && (
