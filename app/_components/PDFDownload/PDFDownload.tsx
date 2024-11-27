@@ -142,7 +142,7 @@ const PdfGenerator = ({
 
     fields.push(["Verification Result", verification_status, 0]);
     fields.push(["Face", idImage, 1]);
-
+    console.log(data.aditionalData);
     data.aditionalData.filter((item: any) => {
       if (item["name"] === "Surname") {
         fields.push([item.name, item.value, 2]);

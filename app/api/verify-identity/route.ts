@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   const { idImage, selfieImage } = await req.json();
-
   try {
     const response = await fetch(`${process.env.API_PROD_URL}`, {
       method: "POST",
@@ -18,11 +17,6 @@ export async function POST(req: Request) {
       }),
     });
     if (!response.ok) {
-      console.log(`idImage size: ${(idImage.length * 3) / 4 / 1024 / 1024} MB`);
-      console.log(
-        `selfieImage size: ${(selfieImage.length * 3) / 4 / 1024 / 1024} MB`
-      );
-
       console.log({ response });
       const error = await response.json();
       console.log({ error });
