@@ -90,7 +90,6 @@ const IdentityVerification = () => {
   };
 
   const handleFileDrop = (file: File) => {
-    console.log("Files received:", file);
     const reader = new FileReader();
     reader.onloadend = () => {
       setIdImage(reader.result as string);
@@ -252,10 +251,10 @@ const IdentityVerification = () => {
               </button>
 
               {/* Upload Option */}
-             {/*  <p className={styles.orText}>or</p>
+              <p className={styles.orText}>or</p>
               <div>
                 <DragAndDrop onFileDrop={handleFileDrop} />
-              </div> */}
+              </div>
             </div>
           )}
           {showQRCode && (
