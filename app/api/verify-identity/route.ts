@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   const { idImage, selfieImage } = await req.json();
   try {
+    console.log("entering try catch block");
+
     const response = await fetch(`${process.env.API_PROD_URL}`, {
       method: "POST",
       headers: {
@@ -16,6 +18,8 @@ export async function POST(req: Request) {
         clientId: process.env.CLIENT_ID as string,
       }),
     });
+    console.log({ response });
+
     if (!response.ok) {
       console.log({ response });
       const error = await response.json();

@@ -278,7 +278,7 @@ const PdfGenerator = ({
                 <li>Your ID might be expired or</li>
                 <li>It might have failed some security checks</li>
               </ul>
-              <p>
+              <p style={{textAlign:'center',marginTop:'20px'}}>
                 Please ensure you follow all necessary requirements when taking
                 photo as shown{" "}
                 <a
@@ -289,7 +289,7 @@ const PdfGenerator = ({
                   here
                 </a>{" "}
               </p>
-              <p>
+              <p style={{textAlign:'center'}}>
                 If you still have issues please{" "}
                 <a href="mailto:rob@rented123.com">contact us</a>
               </p>

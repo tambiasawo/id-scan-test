@@ -97,7 +97,7 @@ const IdentityVerification = () => {
     };
     if (file) reader.readAsDataURL(file);
   };
-
+console.log({idImage})
   React.useEffect(() => {
     checkCameraStatus();
     if (!token) {
