@@ -1,7 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
   overflow-x: hidden !important;
 }
 
 /* pages/404.module.css */
-
