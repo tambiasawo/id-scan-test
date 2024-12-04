@@ -29,7 +29,6 @@ const IdentityVerification = () => {
   const verifyToken = React.useCallback(
     async (token: string | null) => {
       const activeToken = await getToken(token as string);
-      console.log({ activeToken: activeToken });
       if (!activeToken) {
         router.push("/404");
       } else if (activeToken[0].product !== "idscan") router.push("/404");
@@ -109,7 +108,6 @@ const IdentityVerification = () => {
       verifyToken(token);
     }
   }, [checkCameraStatus, token, verifyToken, router]);
-  console.log({ activeToken, idImage });
   if (error)
     return (
       <div className={styles.errorContainer}>
@@ -255,7 +253,7 @@ const IdentityVerification = () => {
                 id="id_upload"
                 fieldName=""
                 uponFileChange={handleFileDrop}
-                supportedFileTypes={".jpg,.png,.jpeg,.pdf"}
+                supportedFileTypes={".jpg,.png,.pdf"}
                 isMultiple={false}
               />
             </div>
