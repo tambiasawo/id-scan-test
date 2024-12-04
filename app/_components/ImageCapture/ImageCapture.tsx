@@ -249,13 +249,13 @@ const IdentityVerification = () => {
               >
                 Capture ID
               </button>
-              <FileUpload
+             {/*  <FileUpload
                 id="id_upload"
                 fieldName=""
                 uponFileChange={handleFileDrop}
                 supportedFileTypes={".jpg,.png,.pdf"}
                 isMultiple={false}
-              />
+              /> */}
             </div>
           )}
           {showQRCode && (
