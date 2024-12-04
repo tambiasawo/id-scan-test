@@ -56,8 +56,9 @@
 
 .header {
   font-size: 1.5rem;
+  font-weight: 700;
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 @media screen and (max-width: 640px) {
@@ -139,6 +140,7 @@
 .bottomText {
   text-decoration: underline;
   cursor: pointer;
+  margin-bottom: 20px;
 }
 
 .iframeParentContainer,
