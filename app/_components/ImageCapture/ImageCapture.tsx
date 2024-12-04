@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/app/actions";
 import QRCode from "../QRCode/QRCode";
 import useIsMobile from "@/app/utils";
-import DragAndDrop from "../DragAndDrop";
+import { FileUpload } from "../FileUpload/FileUpload";
 
 const IdentityVerification = () => {
   const isMobileDevice = useIsMobile();
@@ -29,6 +29,7 @@ const IdentityVerification = () => {
   const verifyToken = React.useCallback(
     async (token: string | null) => {
       const activeToken = await getToken(token as string);
+      console.log({ activeToken: activeToken });
       if (!activeToken) {
         router.push("/404");
       } else if (activeToken[0].product !== "idscan") router.push("/404");
@@ -89,15 +90,17 @@ const IdentityVerification = () => {
     if (imageSrc) setStep(2);
   };
 
-  const handleFileDrop = (file: File) => {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setIdImage(reader.result as string);
-      if (reader.result) setStep(2);
-    };
-    if (file) reader.readAsDataURL(file);
+  const handleFileDrop = (files: File[]) => {
+    const file = files[0];
+    if (!Array.isArray(file)) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setIdImage(reader.result as string);
+        if (reader.result) setStep(2);
+      };
+      if (file) reader.readAsDataURL(file);
+    }
   };
-  console.log({ idImage });
   React.useEffect(() => {
     checkCameraStatus();
     if (!token) {
@@ -106,7 +109,7 @@ const IdentityVerification = () => {
       verifyToken(token);
     }
   }, [checkCameraStatus, token, verifyToken, router]);
-
+  console.log({ activeToken, idImage });
   if (error)
     return (
       <div className={styles.errorContainer}>
@@ -166,9 +169,8 @@ const IdentityVerification = () => {
           )}
           {showQRCode && (
             <QRCode
-              url={
-                "https://services.idscan.rented123.com/?token=bf641dab9ca0df845a62f88a5d28161c"
-              }
+              url={`https://services.idscan.rented123.com/?token=${activeToken}`}
+              token={activeToken}
             />
           )}{" "}
         </div>
@@ -184,7 +186,7 @@ const IdentityVerification = () => {
         )}
 
         <div className={styles.stepContainer}>
-          {!isMobileDevice && step === 1 && (
+          {!isMobileDevice && step === 1 && !showQRCode && (
             <span
               className={styles.bottomText}
               onClick={() => {
@@ -249,17 +251,19 @@ const IdentityVerification = () => {
               >
                 Capture ID
               </button>
-
-              {/* Upload Option 
-              <p className={styles.orText}>or</p>
-              <div>
-                <DragAndDrop onFileDrop={handleFileDrop} />
-              </div>*/}
+              <FileUpload
+                id="id_upload"
+                fieldName=""
+                uponFileChange={handleFileDrop}
+                supportedFileTypes={".jpg,.png,.jpeg,.pdf"}
+                isMultiple={false}
+              />
             </div>
           )}
           {showQRCode && (
             <QRCode
               url={`https://services.idscan.rented123.com/?token=${activeToken}`}
+              token={activeToken}
             />
           )}{" "}
           {step === 2 && (
