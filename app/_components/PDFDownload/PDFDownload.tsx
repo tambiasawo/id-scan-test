@@ -123,7 +123,7 @@ const PdfGenerator = ({
 
       return fields;
     },
-    [data]
+    []
   );
   const clearInputs = React.useCallback(() => {
     setShowEmailInput(false);
