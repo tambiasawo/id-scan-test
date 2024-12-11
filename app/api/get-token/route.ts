@@ -18,8 +18,6 @@ export async function GET(req: Request) {
         },
       }
     );
-    console.log({ response });
-    console.log(response.ok, response.status, response.url);
     if (!response.ok) {
       const error = await response.json();
       return NextResponse.json(
