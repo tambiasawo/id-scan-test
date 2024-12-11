@@ -20,14 +20,36 @@ export const getToken = async (token: string) => {
   }
 };
 
-export const emailPDF = async (userDetails: {
-  last_name: string;
-  first_name: string;
-  dob: string;
-}) => {
-  await fetch("/api/send-email/", {
+export const emailPDF = async (
+  userDetails: {
+    last_name: string;
+    first_name: string;
+  },
+  pdfUrl: string,
+  recipientEmail?: string
+) => {
+  return await fetch("/api/send-email/", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userDetails }),
+    body: JSON.stringify({
+      userDetails,
+      pdfUrl,
+      recipientEmail,
+    }),
+  });
+};
+
+export const emailRecipient = async (
+  userDetails: {
+    last_name: string;
+    first_name: string;
+  },
+  verificationReport: Blob,
+  recipientEmail: string
+) => {
+  return await fetch("/api/send-email/", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userDetails, verificationReport, recipientEmail }),
   });
 };
