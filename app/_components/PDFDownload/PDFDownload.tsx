@@ -105,26 +105,23 @@ const PdfGenerator = ({
   const verification_status = data.verificationStatus;
 
   const verificationPassed = !verification_status.toLowerCase().includes("not");
-  const extractFields = React.useCallback(
-    (data: any) => {
-      const fields = data.aditionalData.reduce(
-        (acc: any, item: any) => {
-          const mapping: any = {
-            Surname: "last_name",
-            "Given Names": "first_name",
-            "Date of Birth": "date_of_birth",
-          };
+  const extractFields = React.useCallback((data: any) => {
+    const fields = data.aditionalData.reduce(
+      (acc: any, item: any) => {
+        const mapping: any = {
+          Surname: "last_name",
+          "Given Names": "first_name",
+          "Date of Birth": "date_of_birth",
+        };
 
-          if (mapping[item.name]) acc[mapping[item.name]] = item.value;
-          return acc;
-        },
-        { last_name: "", first_name: "", date_of_birth: "" }
-      );
+        if (mapping[item.name]) acc[mapping[item.name]] = item.value;
+        return acc;
+      },
+      { last_name: "", first_name: "", date_of_birth: "" }
+    );
 
-      return fields;
-    },
-    []
-  );
+    return fields;
+  }, []);
   const clearInputs = React.useCallback(() => {
     setShowEmailInput(false);
     setRecipientEmail("");
@@ -366,7 +363,7 @@ const PdfGenerator = ({
             >
               Download
             </a>
-            <button
+            {/*  <button
               style={{
                 display: "inline-block",
                 marginTop: "10px",
@@ -377,11 +374,10 @@ const PdfGenerator = ({
                 borderRadius: "5px",
                 fontSize: "1rem",
               }}
-              disabled={showEmailInput}
               onClick={() => setShowEmailInput(true)}
             >
               Send To Myself
-            </button>
+            </button> */}
           </div>
           {showEmailInput && (
             <form

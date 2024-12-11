@@ -18,7 +18,7 @@ export async function GET(req: Request) {
         },
       }
     );
-
+console.log({response})
     if (!response.ok) {
       const error = await response.json();
       return NextResponse.json(
