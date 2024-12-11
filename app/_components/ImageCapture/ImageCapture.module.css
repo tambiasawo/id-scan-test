@@ -93,21 +93,7 @@
   margin-bottom: 10px;
 }
 
-.captureButton {
-  padding: 10px 20px;
-  background-color: #32429b;
-  color: #fff;
-  border: none;
-  margin-top: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 200px;
-}
-.captureButton:hover {
-  opacity: 0.85;
-}
+
 
 .orText {
   margin: 10px 0;
@@ -125,18 +111,7 @@
   cursor: pointer;
 }
 
-.submitButton {
-  padding: 10px 20px;
-  background-color: #32429b;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  width: 100%;
-  max-width: 300px;
-  margin-top: 15px;
-}
+
 .bottomText {
   text-decoration: underline;
   cursor: pointer;
