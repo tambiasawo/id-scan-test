@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useRef, useState } from "react";
+import React, { act, Dispatch, SetStateAction, useRef, useState } from "react";
 import Webcam from "react-webcam";
 import styles from "./ImageCapture.module.css";
 import PdfGenerator from "../PDFDownload/PDFDownload";
@@ -7,7 +7,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { getToken } from "@/app/actions";
 import QRCode from "../QRCode/QRCode";
 import useIsMobile from "@/app/utils";
-import { FileUpload } from "../FileUpload/FileUpload";
 
 const IdentityVerification = () => {
   const isMobileDevice = useIsMobile();
@@ -243,13 +242,10 @@ const IdentityVerification = () => {
                   imageSmoothing
                 />
               )}
-              <button
-                onClick={() => captureImage(setIdImage)}
-                className={styles.captureButton}
-              >
+              <button onClick={() => captureImage(setIdImage)}>
                 Capture ID
               </button>
-             {/*  <FileUpload
+              {/*  <FileUpload
                 id="id_upload"
                 fieldName=""
                 uponFileChange={handleFileDrop}
@@ -301,7 +297,7 @@ const IdentityVerification = () => {
         {idImage && selfieImage && step === 2 && (
           <button
             onClick={handleSubmitVerification}
-            className={styles.submitButton}
+            style={{ marginTop: "15px" }}
           >
             Submit for Verification
           </button>
