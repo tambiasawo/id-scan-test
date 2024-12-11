@@ -76,8 +76,7 @@ const saves3LinkInWordPress = async (
       console.error("Error saving report URL:", errorData);
       return "An error occured";
     } else {
-      const responseData = await response.json();
-      console.log("Report URL saved successfully:", responseData);
+      console.log("Report URL saved successfully");
       return s3Url;
     }
   } catch (error) {
@@ -99,10 +98,40 @@ const PdfGenerator = ({
   const [pdfUrl, setPdfUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState("");
+  const [recipientEmail, setRecipientEmail] = React.useState("");
+  const [showEmailInput, setShowEmailInput] = React.useState(false);
+  const [emailFeedbackMessage, setEmailFeedbackMessage] = React.useState("");
   const isMobileDevice = useIsMobile();
   const verification_status = data.verificationStatus;
 
   const verificationPassed = !verification_status.toLowerCase().includes("not");
+  const extractFields = React.useCallback(
+    (data: any) => {
+      const fields = data.aditionalData.reduce(
+        (acc: any, item: any) => {
+          const mapping: any = {
+            Surname: "last_name",
+            "Given Names": "first_name",
+            "Date of Birth": "date_of_birth",
+          };
+
+          if (mapping[item.name]) acc[mapping[item.name]] = item.value;
+          return acc;
+        },
+        { last_name: "", first_name: "", date_of_birth: "" }
+      );
+
+      return fields;
+    },
+    [data]
+  );
+  const clearInputs = React.useCallback(() => {
+    setShowEmailInput(false);
+    setRecipientEmail("");
+    setEmailFeedbackMessage("");
+  }, []);
+  const { last_name, first_name } = extractFields(data);
+
   const generatePDF = async () => {
     setLoading(true);
     const doc = new jsPDF();
@@ -136,21 +165,18 @@ const PdfGenerator = ({
     // Format Fields
     doc.setFontSize(12);
     const fields: [string, string, number?][] = [];
-    let last_name = "",
-      first_name = "",
-      dob = "";
 
     fields.push(["Verification Result", verification_status, 0]);
     fields.push(["Face", idImage, 1]);
-    console.log(data.aditionalData);
-    data.aditionalData.filter((item: any) => {
+
+    let dob = "";
+
+    data.aditionalData.map((item: any) => {
       if (item["name"] === "Surname") {
         fields.push([item.name, item.value, 2]);
-        last_name = item.value;
       }
       if (item["name"] === "Given Names") {
         fields.push([item.name, item.value, 3]);
-        first_name = item.value;
       }
       if (item["name"] === "Date of Birth") {
         fields.push([item.name, item.value, 4]);
@@ -161,6 +187,9 @@ const PdfGenerator = ({
       }
       if (item["name"] === "Sex") {
         fields.push([item.name, item.value, 6]);
+      }
+      if (item["name"] === "Address") {
+        fields.push(["Physical Address", item.value, 6]);
       }
       if (item["name"] === "Nationality") {
         fields.push([item.name, item.value, 7]);
@@ -185,6 +214,7 @@ const PdfGenerator = ({
       }
       return;
     });
+
     let yPosition = 72; // Starting Y position on the page
     fields
       .sort((a: any, b: any) => a[2] - b[2])
@@ -237,15 +267,16 @@ const PdfGenerator = ({
       author: "Rented123",
       keywords: `${activeToken} ${last_name} ${dob}`,
     });
-    const pdfBlob = doc.output("blob");
+    const blob = doc.output("blob");
     const s3Url = await saves3LinkInWordPress(
-      pdfBlob,
+      blob,
       verificationPassed,
       `${last_name}_${dob}_verification_report`,
       last_name,
       dob
     );
-    emailPDF({ last_name, first_name, dob });
+
+    emailPDF({ last_name, first_name }, s3Url, recipientEmail);
 
     const isValidURL = (s3Url: string) => /^https?:\/\/\S+\.\S+/.test(s3Url);
     if (isValidURL(s3Url)) {
@@ -265,7 +296,7 @@ const PdfGenerator = ({
   if (!verificationPassed)
     return (
       <>
-        <h3>Sorry, we could not verify your ID</h3>
+        <h3 style={{ color: "red" }}>Sorry, we could not verify your ID</h3>
         <Accordion
           title="Why did my ID verification fail ?"
           content={
@@ -278,30 +309,24 @@ const PdfGenerator = ({
                 <li>Your ID might be expired or</li>
                 <li>It might have failed some security checks</li>
               </ul>
-              <p style={{textAlign:'center',marginTop:'20px'}}>
+              <p style={{ textAlign: "center", marginTop: "20px" }}>
                 Please ensure you follow all necessary requirements when taking
                 photo as shown{" "}
                 <a
-                  //style={{ color: "red" }}
                   href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
                   target="_blank"
                 >
                   here
                 </a>{" "}
               </p>
-              <p style={{textAlign:'center'}}>
+              <p style={{ textAlign: "center" }}>
                 If you still have issues please{" "}
                 <a href="mailto:rob@rented123.com">contact us</a>
               </p>
             </div>
           }
         />
-        <button
-          className={styles.tryAgainButton}
-          onClick={() => window.location.reload()}
-        >
-          Try Again
-        </button>
+        <button onClick={() => window.location.reload()}>Try Again</button>
       </>
     );
 
@@ -315,24 +340,132 @@ const PdfGenerator = ({
             height={isMobileDevice ? "350px" : "500px"}
             title="Generated PDF"
             style={{ border: "1px solid #ddd", marginTop: "20px" }}
-          />
-          <a
-            href={pdfUrl}
-            target="_blank"
-            download="generated_report.pdf"
+          />{" "}
+          <div
             style={{
-              display: "inline-block",
-              marginTop: "10px",
-              padding: "10px 20px",
-              backgroundColor: "#4caf50",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "5px",
-              fontSize: "1rem",
+              display: showEmailInput ? "none" : "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: "4px",
             }}
           >
-            Download PDF
-          </a>
+            <a
+              href={pdfUrl}
+              target="_blank"
+              download="generated_report.pdf"
+              style={{
+                display: "inline-block",
+                marginTop: "10px",
+                padding: "10px 20px",
+                backgroundColor: "#32429b",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: "5px",
+                fontSize: "1rem",
+              }}
+            >
+              Download
+            </a>
+            <button
+              style={{
+                display: "inline-block",
+                marginTop: "10px",
+                padding: "10px 20px",
+                backgroundColor: "#32429b",
+                color: "#fff",
+                textDecoration: "none",
+                borderRadius: "5px",
+                fontSize: "1rem",
+              }}
+              disabled={showEmailInput}
+              onClick={() => setShowEmailInput(true)}
+            >
+              Send To Myself
+            </button>
+          </div>
+          {showEmailInput && (
+            <form
+              style={{ width: "100%" }}
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!recipientEmail) return;
+                const response = await emailPDF(
+                  {
+                    last_name,
+                    first_name,
+                  },
+                  pdfUrl,
+                  recipientEmail
+                );
+                if (!response.ok) {
+                  setEmailFeedbackMessage(
+                    "Could not send email. Please download"
+                  );
+                } else {
+                  setEmailFeedbackMessage("Email Sent!");
+                }
+                setTimeout(() => {
+                  clearInputs();
+                }, 2000);
+              }}
+            >
+              <input
+                type="email"
+                name="email"
+                required
+                placeholder="john.doe@gmail.com"
+                value={recipientEmail}
+                onChange={(e) => setRecipientEmail(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "6px 10px",
+                  border: "1px solid",
+                  borderRadius: "5px",
+                  marginTop: "15px",
+                }}
+              />
+              <div
+                style={{
+                  display: "flex",
+                  gap: "5px",
+                  float: "right",
+                }}
+              >
+                <button
+                  style={{
+                    padding: "5px 10px !important",
+                  }}
+                  type="submit"
+                  //disabled={!recipientEmail}
+                >
+                  Send
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clearInputs();
+                  }}
+                  style={{
+                    padding: "5px 10px !important",
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+              {emailFeedbackMessage && (
+                <p
+                  style={{
+                    color: emailFeedbackMessage.includes("not")
+                      ? "red"
+                      : "green",
+                  }}
+                >
+                  {" "}
+                  {emailFeedbackMessage}
+                </p>
+              )}
+            </form>
+          )}
           <span
             style={{ fontSize: "12px", marginTop: "20px", textAlign: "center" }}
           >
@@ -347,6 +480,7 @@ const PdfGenerator = ({
               <a
                 href="https://dev.rented123.com/wp-content/uploads/2024/11/Rented123.com-privacy-and-data-collection-consent.docx.pdf"
                 target="_blank"
+                style={{ textDecoration: "underline" }}
               >
                 privacy policy
               </a>{" "}
@@ -354,6 +488,7 @@ const PdfGenerator = ({
               <a
                 href="https://dev.rented123.com/wp-content/uploads/2024/11/BC-Real-Estate-Privacy-Consent.pdf"
                 target="_blank"
+                style={{ textDecoration: "underline" }}
               >
                 BC Real Estate privacy policy
               </a>
@@ -366,7 +501,7 @@ const PdfGenerator = ({
           onClick={generatePDF}
           style={{
             padding: "10px 20px",
-            backgroundColor: loading ? "gray" : "#4caf50",
+            backgroundColor: loading ? "gray" : "#32429b",
             color: "#fff",
             border: "none",
             marginTop: "10px",
