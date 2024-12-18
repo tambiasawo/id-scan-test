@@ -195,9 +195,7 @@ const IdentityVerification = () => {
           )}
           {step === 1 && !showQRCode && (
             <div className={styles.step}>
-              <h2 className={styles.header}>
-                Step 1: Capture or Upload ID Document
-              </h2>
+              <h2 className={styles.header}>Step 1: Capture ID Document</h2>
               <span
                 style={{
                   fontSize: "13px",
