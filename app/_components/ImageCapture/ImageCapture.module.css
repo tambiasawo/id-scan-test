@@ -1,7 +1,3 @@
-video::-webkit-media-controls {
-  display: none !important;
-}
-
 .container {
   display: flex;
   flex-direction: column;
@@ -96,7 +92,9 @@ video::-webkit-media-controls {
   object-fit: cover; /* Centers the image within the shape */
   margin-bottom: 10px;
 }
-
+.faceWebcam video::-webkit-media-controls {
+  display: none !important;
+}
 .orText {
   margin: 10px 0;
   font-size: 1rem;
