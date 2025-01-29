@@ -48,7 +48,6 @@ const IdentityVerification = () => {
       setError(null);
       setData([]);
       setLoading(true);
-      console.log({ idImage, selfieImage });
 
       const response = await fetch("/api/verify-identity", {
         method: "POST",
@@ -63,7 +62,6 @@ const IdentityVerification = () => {
         return; // Stop execution if the response is not OK
       }
       const data = await response.json();
-      console.log({ data });
       setData(data);
 
       setLoading(false);
