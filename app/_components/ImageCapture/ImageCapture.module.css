@@ -1,3 +1,7 @@
+video::-webkit-media-controls {
+  display: none !important;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -84,7 +88,7 @@
 }
 
 .faceWebcam {
-  width: 100%;
+  width: 90%;
   max-width: 250px; /* Restrict width for a circular/oval shape */
   height: 275px; /* Adjust height to create an oval look */
   border-radius: 50%; /* Makes it circular/oval */
@@ -92,8 +96,6 @@
   object-fit: cover; /* Centers the image within the shape */
   margin-bottom: 10px;
 }
-
-
 
 .orText {
   margin: 10px 0;
@@ -110,7 +112,6 @@
   font-size: 1rem;
   cursor: pointer;
 }
-
 
 .bottomText {
   text-decoration: underline;
