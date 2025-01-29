@@ -14,14 +14,15 @@ const Custom404 = () => {
         maxWidth: "80%",
       }}
     >
-      <h1 style={{ color: "red" }}>Page Not Found</h1>
+      <h1 style={{ color: "red", fontSize: "15px" }}>Oops, Page Not Found!</h1>
       <p style={{ lineHeight: "1.6" }}>
-        We are sorry, but the page you&apos;re looking for doesn&apos;t exist, or the link
-        is invalid. If your access token has expired, you can purchase the
-        product again by clicking{" "}
+        We are sorry, but the page you&apos;re looking for doesn&apos;t exist,
+        or your access token has expired. To get access. you can purchase the product again by
+        clicking{" "}
         <Link
           href="https://rented123.com/product/scandit-id-scan/"
           target="_blank"
+          className="underline"
         >
           here
         </Link>

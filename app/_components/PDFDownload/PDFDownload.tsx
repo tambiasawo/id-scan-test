@@ -312,6 +312,7 @@ const PdfGenerator = ({
                 <a
                   href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
                   target="_blank"
+                  className="underline"
                 >
                   here
                 </a>{" "}

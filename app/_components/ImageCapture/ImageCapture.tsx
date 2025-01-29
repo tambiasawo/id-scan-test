@@ -30,9 +30,9 @@ const IdentityVerification = () => {
       const activeToken = await getToken(token as string);
       if (!activeToken) {
         router.push("/404");
-      } else if (activeToken[0].product !== "idscan") router.push("/404");
+      } else if (activeToken.product !== "idscan") router.push("/404");
       else {
-        setActiveToken(activeToken[0]?.token);
+        setActiveToken(activeToken.token);
         setUserVerified(true);
       }
     },
@@ -57,6 +57,7 @@ const IdentityVerification = () => {
         return; // Stop execution if the response is not OK
       }
       const data = await response.json();
+      console.log({ data });
       setData(data);
 
       setLoading(false);
@@ -121,6 +122,7 @@ const IdentityVerification = () => {
               //style={{ color: "red" }}
               href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
               target="_blank"
+              className="underline"
             >
               here
             </a>{" "}
@@ -173,7 +175,7 @@ const IdentityVerification = () => {
         </div>
       </div>
     );
-  if (userVerified)
+  if (true)
     return (
       <div className={styles.container}>
         {loading && (
