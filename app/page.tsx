@@ -1,4 +1,4 @@
-import IdentityVerification from "./_components/ImageCapture/ImageCapture";
+import IdentityVerification from "./_components/ImageCapture";
 import { Suspense } from "react";
 
 export default function Home() {
