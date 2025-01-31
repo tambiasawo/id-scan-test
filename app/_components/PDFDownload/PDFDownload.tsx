@@ -64,7 +64,7 @@ const saves3LinkInWordPress = async (
         dob,
         fileName,
         report_url: s3Url,
-        verification_status: verificationPassed ? "Verified" : "Unverified",
+        verification_status: "Verified",
       }),
       headers: {
         "Content-Type": "application/json",
@@ -104,7 +104,13 @@ const PdfGenerator = ({
   const isMobileDevice = useIsMobile();
   const verification_status = data.verificationStatus;
 
-  const verificationPassed = !verification_status.toLowerCase().includes("not");
+  const verificationPassed =
+    verification_status === "VERIFIED" ||
+    (data.textFields &&
+      data.expirationDate &&
+      data.mrzVerification &&
+      data.securityChecks &&
+      data.portraitComparison);
   const extractFields = React.useCallback((data: any) => {
     const fields = data.aditionalData.reduce(
       (acc: any, item: any) => {
@@ -163,7 +169,7 @@ const PdfGenerator = ({
     doc.setFontSize(12);
     const fields: [string, string, number?][] = [];
 
-    fields.push(["Verification Result", verification_status, 0]);
+    fields.push(["Verification Result", verificationPassed, 0]);
     fields.push(["Face", idImage, 1]);
 
     let dob = "";
@@ -300,26 +306,30 @@ const PdfGenerator = ({
             <div>
               <ul>
                 <li>
-                  The image quality might be poor and we might have missed some
-                  details. In this case, using a phone camera might help.
+                  A major reason this occurs is due to poor image quality. Are
+                  you in a well lit area? Was there glare? If you used a webcam,
+                  consider switching to a phone camera. For more information on
+                  our image requirements, click{" "}
+                  <a
+                    href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
+                    target="_blank"
+                    className="underline"
+                  >
+                    here
+                  </a>{" "}
                 </li>
                 <li>Your ID might be expired or</li>
-                <li>It might have failed some security checks</li>
+                <li>
+                  In the rarest of cases, it might have failed some security
+                  checks
+                </li>
               </ul>
-              <p style={{ textAlign: "center", marginTop: "20px" }}>
-                Please ensure you follow all necessary requirements when taking
-                photo as shown{" "}
-                <a
-                  href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
-                  target="_blank"
-                  className="underline"
-                >
-                  here
-                </a>{" "}
-              </p>
+
               <p style={{ textAlign: "center" }}>
-                If you still have issues please{" "}
-                <a href="mailto:rob@rented123.com">contact us</a>
+                If you are still experiencing issues please{" "}
+                <a href="mailto:rob@rented123.com" className="underline">
+                  contact us
+                </a>
               </p>
             </div>
           }
