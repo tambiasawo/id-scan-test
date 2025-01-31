@@ -120,7 +120,7 @@ const IdentityVerification = () => {
             Some texts in the ID image were unreadable.{" "}
           </p>
           <p style={{ textAlign: "center" }}>
-            Please ensure you follow all necessary requirements when taking
+            Please ensure you follow all our image requirements when taking a
             photo as shown{" "}
             <a
               href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
@@ -199,7 +199,7 @@ const IdentityVerification = () => {
         )}
         {step === 1 && !showQRCode && (
           <div className={styles.step}>
-            <h2 className={styles.header}>Step 1: Capture ID Document</h2>
+            <h2 className={`${styles.header}`}>Step 1: Capture ID Document</h2>
             <span
               style={{
                 fontSize: "13px",
@@ -207,8 +207,8 @@ const IdentityVerification = () => {
                 marginBottom: "9px",
               }}
             >
-              Please ensure your ID fills no more than 60% - 70% of the capture
-              area
+              Ensure you are in a <strong> well lit</strong> area and there is
+              no glare off your ID
             </span>
             {isCameraOn ? (
               <>
@@ -223,6 +223,11 @@ const IdentityVerification = () => {
                 <button onClick={() => captureImage(setIdImage)}>
                   Capture ID
                 </button>
+                <p className="text-xs mt-2">
+                  {" "}
+                  If you are not in a <strong>well lit</strong> area, the ID
+                  capture won&apos;t work!
+                </p>
               </>
             ) : (
               <div
