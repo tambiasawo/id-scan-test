@@ -102,10 +102,9 @@ const PdfGenerator = ({
   const [showEmailInput, setShowEmailInput] = React.useState(false);
   const [emailFeedbackMessage, setEmailFeedbackMessage] = React.useState("");
   const isMobileDevice = useIsMobile();
-  const verification_status = data.verificationStatus;
 
   const verificationPassed =
-    verification_status === "VERIFIED" ||
+    data.verificationStatus === "VERIFIED" ||
     (data.textFields &&
       data.expirationDate &&
       data.mrzVerification &&
