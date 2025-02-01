@@ -148,7 +148,6 @@ const PdfGenerator = ({
     const buttonHeight = 10; // Button height
     const rX = 3;
     const rY = 3;
-
     // Draw button background
     doc.setFillColor("#007bff"); // Blue color
     doc.roundedRect(buttonX, buttonY, buttonWidth, buttonHeight, rX, rY, "F");
@@ -231,7 +230,7 @@ const PdfGenerator = ({
           yPosition += 90;
         } else if (field[0] === "Verification Result" && index === 0) {
           const pageWidth = doc.internal.pageSize.getWidth(); // Get the width of the PDF page
-          const textWidth = doc.getTextWidth(field[1]); // Get the width of the text
+          const textWidth = doc.getTextWidth(field[0]); // Get the width of the text
           const xPosition = (pageWidth - textWidth) / 2; // Calculate X position for centering
           doc.setFontSize(20);
           doc.setFont("Helvetica", "bold");
@@ -351,19 +350,19 @@ const PdfGenerator = ({
           <div
             style={{
               display: showEmailInput ? "none" : "flex",
-              justifyContent: "space-between",
+              justifyContent: isMobileDevice ? "center" : "end",
+              width: "100%",
               alignItems: "center",
-              gap: "4px",
+              gap: "16px",
             }}
           >
             <a
               href={pdfUrl}
               target="_blank"
-              download="generated_report.pdf"
+              download="ID Scan_Report.pdf"
               style={{
-                display: "inline-block",
                 marginTop: "10px",
-                padding: "10px 20px",
+                padding: "5px 10px",
                 backgroundColor: "#32429b",
                 color: "#fff",
                 textDecoration: "none",
@@ -373,25 +372,22 @@ const PdfGenerator = ({
             >
               Download
             </a>
-            {/*  <button
+            <button
               style={{
-                display: "inline-block",
-                marginTop: "10px",
-                padding: "10px 20px",
-                backgroundColor: "#32429b",
-                color: "#fff",
-                textDecoration: "none",
-                borderRadius: "5px",
-                fontSize: "1rem",
+                padding: isMobileDevice ? "5px" : "5px 10px",
+                width: "100px",
               }}
               onClick={() => setShowEmailInput(true)}
             >
-              Send To Myself
-            </button> */}
+              Email Me
+            </button>
           </div>
           {showEmailInput && (
             <form
-              style={{ width: "100%" }}
+              style={{
+                width: isMobileDevice ? "80%" : "100%",
+                //display: "flex",
+              }}
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!recipientEmail) return;
@@ -412,7 +408,7 @@ const PdfGenerator = ({
                 }
                 setTimeout(() => {
                   clearInputs();
-                }, 2000);
+                }, 2500);
               }}
             >
               <input
@@ -426,6 +422,7 @@ const PdfGenerator = ({
                   width: "100%",
                   padding: "6px 10px",
                   border: "1px solid",
+                  display: "flex",
                   borderRadius: "5px",
                   marginTop: "15px",
                 }}
@@ -433,47 +430,64 @@ const PdfGenerator = ({
               <div
                 style={{
                   display: "flex",
-                  gap: "5px",
-                  float: "right",
+                  justifyContent: "space-between",
+                  //gap: "8px",
+                  //width: isMobileDevice ? "80%" : "100%",
+                  alignItems: "center",
                 }}
               >
-                <button
-                  style={{
-                    padding: "5px 10px !important",
-                  }}
-                  type="submit"
-                  //disabled={!recipientEmail}
-                >
-                  Send
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    clearInputs();
-                  }}
-                  style={{
-                    padding: "5px 10px !important",
-                  }}
-                >
-                  Cancel
-                </button>
-              </div>
-              {emailFeedbackMessage && (
                 <p
                   style={{
                     color: emailFeedbackMessage.includes("not")
                       ? "red"
                       : "green",
+                    width: "100%",
+                    visibility: Boolean(emailFeedbackMessage)
+                      ? "visible"
+                      : "hidden",
                   }}
                 >
-                  {" "}
                   {emailFeedbackMessage}
                 </p>
-              )}
+
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "end",
+                    float: "right",
+                  }}
+                >
+                  <button
+                    style={{
+                      padding: "2px 1px",
+                      width: "52px",
+                      backgroundColor: !recipientEmail ? "#cccccc" : "",
+                    }}
+                    type="submit"
+                    disabled={!Boolean(recipientEmail)}
+                  >
+                    Send
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearInputs();
+                    }}
+                    style={{
+                      padding: "2px 5px",
+                      width: "62px",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </form>
           )}
+         
           <span
-            style={{ fontSize: "12px", marginTop: "20px", textAlign: "center" }}
+            style={{ fontSize: "12px", marginTop: "40px", textAlign: "center" }}
           >
             <p>
               {" "}
