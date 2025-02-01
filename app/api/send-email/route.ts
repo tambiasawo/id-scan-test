@@ -33,9 +33,12 @@ export async function POST(req: Request) {
         },
         Html: {
           Data: `
-            <h1>Verification Result: Passed</h1>
-            <p>Name: <b>${userDetails.last_name}</b>, ${userDetails.first_name}</p>
-            <p>Download link: ${pdfUrl}</p>
+            <p>Hi ${userDetails.first_name},</p>
+            <p>Congratulations! Your ID has been successfully verified. Click the link below to download the report</p>
+            <p>${pdfUrl}</p>
+            <br>
+            <p>Happy Renting</p>
+            <p>The Rented123 Team</p>
           `,
         },
       },
