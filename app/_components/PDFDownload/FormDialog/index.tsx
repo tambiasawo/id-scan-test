@@ -1,43 +1,160 @@
+import { emailPDF } from "@/app/actions";
+import useIsMobile from "@/app/utils";
 import * as React from "react";
 
-export default function FormDialog() {
-  const [open, setOpen] = React.useState(false);
-  const [email, setEmail] = React.useState("");
+export default function FormDialog({
+  pdfUrl,
+  recipient,
+}: {
+  pdfUrl: string;
+  recipient: { last_name: string; first_name: string };
+}) {
+  const [recipientEmail, setRecipientEmail] = React.useState("");
+  const [showEmailInput, setShowEmailInput] = React.useState(false);
+  const [emailFeedbackMessage, setEmailFeedbackMessage] = React.useState("");
+  const isMobileDevice = useIsMobile();
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const { last_name, first_name } = recipient;
+  const clearInputs = React.useCallback(() => {
+    setShowEmailInput(false);
+    setRecipientEmail("");
+    setEmailFeedbackMessage("");
+  }, []);
 
   return (
-    <div style={{ width:'100%' }}>
-      <button onClick={handleClickOpen}>Send to Myself</button>
-      {open && (
-        <div style={{ position: "absolute",width:'100%',background:'#fff' }}>
-          <h2>Send to Myself</h2>
-          <div>
-            Enter your email address and click send to send this report to
-            yourself
-          </div>
+    <div>
+      <div
+        style={{
+          display: showEmailInput ? "none" : "flex",
+          justifyContent: isMobileDevice ? "center" : "end",
+          width: "100%",
+          alignItems: "center",
+          gap: "16px",
+        }}
+      >
+        <a
+          href={pdfUrl}
+          target="_blank"
+          download="ID Scan_Report.pdf"
+          style={{
+            marginTop: "10px",
+            padding: "5px 10px",
+            backgroundColor: "#32429b",
+            color: "#fff",
+            textDecoration: "none",
+            borderRadius: "5px",
+            fontSize: "1rem",
+          }}
+        >
+          Download
+        </a>
+        <button
+          style={{
+            padding: isMobileDevice ? "5px" : "5px 10px",
+            width: "100px",
+          }}
+          onClick={() => setShowEmailInput(true)}
+        >
+          Email Me
+        </button>
+      </div>
+      {showEmailInput && (
+        <form
+          style={{
+            width: isMobileDevice ? "80%" : "100%",
+          }}
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (!recipientEmail) return;
+            const response = await emailPDF(
+              {
+                last_name,
+                first_name,
+              },
+              pdfUrl,
+              recipientEmail
+            );
+            if (!response.ok) {
+              setEmailFeedbackMessage("Could not send email. Please download");
+            } else {
+              setEmailFeedbackMessage("Email Sent!");
+            }
+            setTimeout(() => {
+              clearInputs();
+            }, 2500);
+          }}
+        >
           <input
-            autoFocus
-            required
-            id="email"
-            name="email"
             type="email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
+            name="email"
+            required
+            placeholder="john.doe@gmail.com"
+            value={recipientEmail}
+            onChange={(e) => setRecipientEmail(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "6px 10px",
+              border: "1px solid",
+              display: "flex",
+              borderRadius: "5px",
+              marginTop: "15px",
             }}
           />
-          <div>
-            <button onClick={handleClose}>Cancel</button>
-            <button type="submit">Send</button>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              //gap: "8px",
+              //width: isMobileDevice ? "80%" : "100%",
+              alignItems: "center",
+            }}
+          >
+            <p
+              style={{
+                color: emailFeedbackMessage.includes("not") ? "red" : "green",
+                width: "100%",
+                visibility: Boolean(emailFeedbackMessage)
+                  ? "visible"
+                  : "hidden",
+              }}
+            >
+              {emailFeedbackMessage}
+            </p>
+
+            <div
+              style={{
+                display: "flex",
+                gap: "10px",
+                justifyContent: "end",
+                float: "right",
+              }}
+            >
+              <button
+                style={{
+                  padding: "2px 1px",
+                  width: "52px",
+                  backgroundColor: !recipientEmail ? "#cccccc" : "",
+                }}
+                type="submit"
+                disabled={!Boolean(recipientEmail)}
+              >
+                Send
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  clearInputs();
+                }}
+                style={{
+                  padding: "2px 5px",
+                  width: "62px",
+                }}
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
       )}
     </div>
   );
