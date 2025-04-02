@@ -260,7 +260,7 @@ const PdfGenerator = ({
                 <li>Try using your phone camera for better quality.</li>
                 <li>The ID might be expired or failed security checks.</li>
               </ul>
-              <p>
+              <p className="text-center mt-6 mb-2">
                 Still having trouble?{" "}
                 <a href="mailto:rob@rented123.com" className="underline">
                   Contact us
