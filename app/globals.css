@@ -7,7 +7,7 @@ body {
   overflow-x: hidden !important;
 }
 
-button {
+button.btn {
   padding: 10px 20px;
   background-color: #32429b;
   color: #fff;

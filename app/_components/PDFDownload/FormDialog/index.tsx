@@ -50,8 +50,14 @@ export default function FormDialog({
         </a>
         <button
           style={{
+            marginTop: "10px",
             padding: isMobileDevice ? "5px" : "5px 10px",
             width: "100px",
+            backgroundColor: "#32429b",
+            color: "#fff",
+            textDecoration: "none",
+            borderRadius: "5px",
+            fontSize: "1rem",
           }}
           onClick={() => setShowEmailInput(true)}
         >
@@ -61,7 +67,7 @@ export default function FormDialog({
       {showEmailInput && (
         <form
           style={{
-            width: isMobileDevice ? "80%" : "100%",
+            width: "100%",
           }}
           onSubmit={async (e) => {
             e.preventDefault();
@@ -94,7 +100,7 @@ export default function FormDialog({
             style={{
               width: "100%",
               padding: "6px 10px",
-              border: "1px solid",
+              outline: "1px solid #000",
               display: "flex",
               borderRadius: "5px",
               marginTop: "15px",

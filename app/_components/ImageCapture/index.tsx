@@ -220,7 +220,10 @@ const IdentityVerification = () => {
                   className={styles.webcam}
                 ></video>
                 <canvas ref={canvasRef} style={{ display: "none" }}></canvas>{" "}
-                <button onClick={() => captureImage(setIdImage)}>
+                <button
+                  className="btn"
+                  onClick={() => captureImage(setIdImage)}
+                >
                   Capture ID
                 </button>
                 <p className="text-xs mt-2">
@@ -267,7 +270,7 @@ const IdentityVerification = () => {
 
                 <button
                   onClick={() => captureImage(setSelfieImage)}
-                  className={styles.captureButton}
+                  className={`btn ${styles.captureButton}`}
                 >
                   Capture Selfie
                 </button>
@@ -285,6 +288,7 @@ const IdentityVerification = () => {
 
       {idImage && selfieImage && step === 2 && (
         <button
+          className="btn"
           onClick={handleSubmitVerification}
           style={{ marginTop: "15px" }}
         >

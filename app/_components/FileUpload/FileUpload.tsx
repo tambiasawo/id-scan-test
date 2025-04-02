@@ -138,7 +138,7 @@ export const FileUpload = ({
                   <button
                     type="button"
                     onClick={() => handleRemoveFile(index)}
-                    className="absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 w-[20px] h-[20px] flex items-center justify-center"
+                    className="btn absolute top-0 right-0 bg-red-600 text-white rounded-full p-1 w-[20px] h-[20px] flex items-center justify-center"
                   >
                     ×
                   </button>
