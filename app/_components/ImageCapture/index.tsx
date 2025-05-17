@@ -207,9 +207,10 @@ const IdentityVerification = () => {
                 marginBottom: "9px",
               }}
             >
-              Ensure you are in a <strong> well lit</strong> area and there is
-              no glare off your ID
+              Ensure you are in a <strong> well lit</strong> area and the image
+              is <strong>sharp and readable </strong>
             </span>
+            <p></p>
             {isCameraOn ? (
               <>
                 <video
@@ -226,10 +227,18 @@ const IdentityVerification = () => {
                 >
                   Capture ID
                 </button>
-                <p className="text-xs mt-2">
+                <p className="text-xs mt-2 text-center">
                   {" "}
-                  If you are not in a <strong>well lit</strong> area, the ID
-                  capture won&apos;t work!
+                  For a better capture of your ID, please{" "}
+                  <strong> follow all image capture requirements</strong> as
+                  listed{" "}
+                  <a
+                    href="https://docs.regulaforensics.com/develop/doc-reader-sdk/overview/image-quality-requirements/"
+                    target="_blank"
+                    className="underline"
+                  >
+                    here
+                  </a>
                 </p>
               </>
             ) : (
