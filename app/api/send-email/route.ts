@@ -43,6 +43,7 @@ export async function POST(req: Request) {
         },
       },
     },
+    ConfigurationSetName:'my-first-configuration-set'
   };
 
   try {
