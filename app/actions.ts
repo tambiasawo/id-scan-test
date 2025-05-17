@@ -38,18 +38,3 @@ export const emailPDF = async (
     }),
   });
 };
-
-export const emailRecipient = async (
-  userDetails: {
-    last_name: string;
-    first_name: string;
-  },
-  verificationReport: Blob,
-  recipientEmail: string
-) => {
-  return await fetch("/api/send-email/", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userDetails, verificationReport, recipientEmail }),
-  });
-};

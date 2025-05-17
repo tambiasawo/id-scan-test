@@ -224,7 +224,6 @@ const PdfGenerator = ({
         last_name,
         dob
       );
-      await emailPDF({ last_name, first_name }, s3Url, recipientEmail);
 
       if (/^https?:\/\/\S+\.\S+/.test(s3Url)) {
         setPdfUrl(s3Url);
