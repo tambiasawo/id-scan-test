@@ -20,6 +20,7 @@ export async function GET(req: Request) {
     );
     if (!response.ok) {
       const error = await response.json();
+      console.log({ response, error });
       return NextResponse.json(
         {
           message:
