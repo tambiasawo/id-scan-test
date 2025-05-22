@@ -68,6 +68,9 @@ const saves3LinkInWordPress = async (
   return s3Url;
 };
 
+// Add fonts to jsPDF
+//import "jspdf-autotable";
+
 const PdfGenerator = ({
   data,
   idImage,
@@ -77,7 +80,6 @@ const PdfGenerator = ({
   idImage: string;
   activeToken: string;
 }) => {
-  // ...imports remain unchanged
   const isMobileDevice = useIsMobile();
   const [pdfUrl, setPdfUrl] = React.useState("");
   const [loading, setLoading] = React.useState(false);
@@ -116,106 +118,307 @@ const PdfGenerator = ({
   const generatePDF = async () => {
     try {
       setLoading(true);
-      const doc = new jsPDF();
-      const pageHeight = doc.internal.pageSize.getHeight();
-      doc.addImage(logoImage, "PNG", 94, 10, 20, 28);
 
-      doc.setFillColor("#007bff");
-      doc.roundedRect(70, 43, 70, 10, 3, 3, "F");
-      doc.link(70, 43, 70, 10, { url: "https://rented123.com" });
-      doc.setTextColor("#ffffff").setFontSize(12);
-      doc.text("Membership has its benefits", 105, 49, { align: "center" });
-
-      doc.setTextColor("#000000").setFontSize(12);
-
-      const fieldMap: Record<string, number> = {
-        Age: 5,
-        Sex: 6,
-        Address: 6,
-        Nationality: 7,
-        "Document Number": 8,
-        Authority: 9,
-        "Date of Issue": 10,
-        "Date of Expiry": 11,
-        "Issuing State Code": 9,
-        "Issuing State Name": 10,
-      };
-
-      const fields: [string, string, number?][] = [
-        ["Verification Result", verificationPassed ? "Passed" : "Failed", 0],
-        ["Face", idImage, 1],
-        ["Surname", last_name, 2],
-        ["Given Names", first_name, 3],
-        ["Date of Birth", dob, 4],
-      ];
-
-      if (data?.aditionalData) {
-        for (const item of data.aditionalData) {
-          if (fieldMap[item.name] !== undefined && item.value) {
-            const label =
-              item.name === "Address" ? "Physical Address" : item.name;
-            fields.push([label, item.value, fieldMap[item.name]]);
-          }
-        }
-      }
-
-      let yPosition = 72;
-
-      // Top-centered verification result
-      const resultText = `Verification Result: ${
-        verificationPassed ? "Passed" : "Failed"
-      }`;
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const textWidth = doc.getTextWidth(resultText);
-      const centerX = (pageWidth - textWidth) / 2;
-      doc
-        .setFontSize(20)
-        .setFont("Helvetica", "bold")
-        .setTextColor(verificationPassed ? "green" : "red")
-        .text(resultText, centerX, yPosition);
-      yPosition += 18;
-
-      fields
-        .sort((a, b) => (a[2] || 99) - (b[2] || 99))
-        .forEach(([label, value]) => {
-          if (label === "Verification Result") return;
-
-          if (label === "Face") {
-            if (yPosition + 70 >= pageHeight) {
-              doc.addPage();
-              yPosition = 20;
-            }
-            doc
-              .setFontSize(13)
-              .setFont("Helvetica", "bold")
-              .setTextColor("#999999")
-              .text(label, 10, yPosition + 14);
-            doc.addImage(value, "JPEG", 10, yPosition + 17, 70, 50);
-            yPosition += 90;
-          } else {
-            if (yPosition + 30 >= pageHeight) {
-              doc.addPage();
-              yPosition = 20;
-            }
-            doc
-              .setFontSize(13)
-              .setFont("Helvetica", "bold")
-              .setTextColor("#999999")
-              .text(label, 10, yPosition);
-            doc
-              .setTextColor("#000")
-              .setFont("Helvetica", "normal")
-              .text(value, 10, yPosition + 10);
-            yPosition += 22;
-          }
-        });
-
-      doc.setProperties({
-        title: "ID Verification Result",
-        author: "Rented123",
-        keywords: `${activeToken} ${last_name} ${dob}`,
+      // Create a new PDF document
+      const doc = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
       });
 
+      // Document constants
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const margin = 20;
+      const contentWidth = pageWidth - margin * 2;
+
+      // Define colors
+      const primaryColor = [50, 66, 155]; // #32429B in RGB
+      const secondaryColor = [0, 123, 255]; // #007BFF in RGB
+      const textColor = [51, 51, 51]; // #333333 in RGB
+      const lightGrayColor = [153, 153, 153]; // #999999 in RGB
+      const successColor = [40, 167, 69]; // #28A745 in RGB
+      const dangerColor = [220, 53, 69]; // #DC3545 in RGB
+
+      // Define common text styles
+      const addPageHeader = (pageNum: number, totalPages: number) => {
+        doc.setFillColor(248, 249, 250); // #F8F9FA
+        doc.rect(0, 0, pageWidth, 15, "F");
+        doc.setDrawColor(233, 236, 239); // #E9ECEF
+        doc.setLineWidth(0.1);
+        doc.line(0, 15, pageWidth, 15);
+
+        doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+        doc.setFontSize(9);
+        doc.text("ID Verification Report", margin, 10);
+
+        // Add date on the right
+        const today = new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        const dateText = `Generated: ${today}`;
+        const dateWidth = doc.getTextWidth(dateText);
+        doc.text(dateText, pageWidth - margin - dateWidth, 10);
+
+        // Add page number
+        const pageText = `Page ${pageNum} of ${totalPages}`;
+        //const pageWidth = doc.getTextWidth(pageText);
+        doc.text(pageText, pageWidth - margin - pageWidth, pageHeight - 10);
+      };
+
+      // Add footer with disclaimer and page number
+      const addPageFooter = (pageNum: number, totalPages: number) => {
+        const footerY = pageHeight - 15;
+
+        doc.setFillColor(248, 249, 250); // #F8F9FA
+        doc.rect(0, footerY, pageWidth, 15, "F");
+        doc.setDrawColor(233, 236, 239); // #E9ECEF
+        doc.setLineWidth(0.1);
+        doc.line(0, footerY, pageWidth, footerY);
+
+        doc.setFontSize(8);
+        doc.setTextColor(
+          lightGrayColor[0],
+          lightGrayColor[1],
+          lightGrayColor[2]
+        );
+        const year = new Date().getFullYear();
+
+        doc.text(
+          `© ${year} Rented123. All rights reserved.`,
+          margin,
+          footerY + 5
+        );
+
+        // Add page number
+        const pageText = `Page ${pageNum} of ${totalPages}`;
+        const pageTextWidth = doc.getTextWidth(pageText);
+        doc.text(pageText, pageWidth - margin - pageTextWidth, footerY + 5);
+      };
+
+      // Create cover page
+      const createCoverPage = () => {
+        // Logo
+        doc.addImage(logoImage, "PNG", (pageWidth - 40) / 2, 30, 40, 56);
+
+        // Title
+        doc.setFontSize(24);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        const title = "ID Verification Result";
+        const titleWidth = doc.getTextWidth(title);
+        doc.text(title, (pageWidth - titleWidth) / 2, 110);
+
+        // Subtitle with verification status
+        doc.setFontSize(16);
+        doc.setFont("helvetica", "bold");
+        if (verificationPassed) {
+          doc.setTextColor(successColor[0], successColor[1], successColor[2]);
+          const subtitle = "VERIFICATION PASSED";
+          const subtitleWidth = doc.getTextWidth(subtitle);
+          doc.text(subtitle, (pageWidth - subtitleWidth) / 2, 125);
+        } else {
+          doc.setTextColor(dangerColor[0], dangerColor[1], dangerColor[2]);
+          const subtitle = "VERIFICATION FAILED";
+          const subtitleWidth = doc.getTextWidth(subtitle);
+          doc.text(subtitle, (pageWidth - subtitleWidth) / 2, 125);
+        }
+
+        // Person information
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+
+        const name = `${first_name} ${last_name}`;
+        const nameWidth = doc.getTextWidth(name);
+        doc.text(name, (pageWidth - nameWidth) / 2, 140);
+
+        if (dob) {
+          const dobText = `Date of Birth: ${dob}`;
+          const dobWidth = doc.getTextWidth(dobText);
+          doc.text(dobText, (pageWidth - dobWidth) / 2, 150);
+        }
+
+        // Date of report
+        const today = new Date().toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        doc.setFontSize(10);
+        const dateText = `Report generated on ${today}`;
+        const dateWidth = doc.getTextWidth(dateText);
+        doc.text(dateText, (pageWidth - dateWidth) / 2, 165);
+
+        // Add footer
+        addPageFooter(1, 2);
+      };
+
+      // Create the data page
+      const createDataPage = () => {
+        doc.addPage();
+        addPageHeader(2, 2);
+
+        let yPosition = 30;
+
+        // Section: Personal Information
+        doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setLineWidth(0.5);
+        doc.line(margin, yPosition, pageWidth - margin, yPosition);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.text("Personal Information", margin, yPosition - 5);
+
+        yPosition += 10;
+
+        // Personal data table
+        const personalData = [
+          { label: "Surname", value: last_name },
+          { label: "Given Names", value: first_name },
+          { label: "Date of Birth", value: dob },
+        ];
+
+        if (data?.aditionalData) {
+          const fieldMap: Record<string, string> = {
+            Age: "Age",
+            Sex: "Sex/Gender",
+            Address: "Physical Address",
+            Nationality: "Nationality",
+            "Document Number": "Document Number",
+            Authority: "Issuing Authority",
+            "Date of Issue": "Date of Issue",
+            "Date of Expiry": "Date of Expiry",
+            "Issuing State Code": "Issuing State Code",
+            "Issuing State Name": "Issuing State/Country",
+          };
+
+          for (const item of data.aditionalData) {
+            if (fieldMap[item.name] !== undefined && item.value) {
+              personalData.push({
+                label: fieldMap[item.name],
+                value: item.value,
+              });
+            }
+          }
+        }
+
+        // Create a table for personal data
+        doc.setFontSize(10);
+
+        const cellPadding = 5;
+        const columnWidth = contentWidth / 2 - cellPadding;
+
+        // Draw the data
+        for (let i = 0; i < personalData.length; i++) {
+          const isEven = i % 2 === 0;
+
+          if (isEven && yPosition + 25 > pageHeight - 20) {
+            addPageFooter(2, 2);
+            doc.addPage();
+            yPosition = 30;
+            addPageHeader(3, 3);
+          }
+
+          if (isEven) {
+            // Add light background for even rows
+            doc.setFillColor(248, 249, 250); // #F8F9FA
+            doc.rect(margin, yPosition, contentWidth, 20, "F");
+          }
+
+          // Label
+          doc.setFont("helvetica", "bold");
+          doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+          doc.text(personalData[i].label, margin + cellPadding, yPosition + 12);
+
+          // Value
+          doc.setFont("helvetica", "normal");
+          doc.text(
+            personalData[i].value,
+            margin + contentWidth / 2 + cellPadding,
+            yPosition + 12
+          );
+
+          yPosition += 20;
+        }
+
+        // Section: Verification Details
+        yPosition += 10;
+        doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setDrawColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        doc.setLineWidth(0.5);
+        doc.line(margin, yPosition, pageWidth - margin, yPosition);
+
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+        //doc.text("Verification Details", margin, yPosition - 5);
+
+        yPosition += 15;
+
+        // Verification status
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        doc.text("Verification Status:", margin, yPosition);
+
+        // Status value
+        if (verificationPassed) {
+          doc.setTextColor(successColor[0], successColor[1], successColor[2]);
+          doc.text("PASSED", margin + 50, yPosition);
+        } else {
+          doc.setTextColor(dangerColor[0], dangerColor[1], dangerColor[2]);
+          doc.text("FAILED", margin + 50, yPosition);
+        }
+
+        yPosition += 15;
+
+        // Add ID image
+        if (idImage) {
+          doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+          doc.setFont("helvetica", "bold");
+          doc.text("ID Image:", margin, yPosition);
+
+          yPosition += 10;
+
+          // Calculate image dimensions to fit within margins while maintaining aspect ratio
+          const imageWidth = contentWidth * 0.7;
+          const imageHeight = 70; // Fixed height or calculate based on aspect ratio
+
+          const imageX = margin + (contentWidth - imageWidth) / 2;
+
+          doc.addImage(
+            idImage,
+            "JPEG",
+            imageX,
+            yPosition,
+            imageWidth,
+            imageHeight
+          );
+
+          yPosition += imageHeight + 10;
+        }
+
+        // Add footer
+        addPageFooter(2, 2);
+      };
+
+      // Generate the full document
+      createCoverPage();
+      createDataPage();
+
+      // Set document properties
+      doc.setProperties({
+        title: "ID Verification Report",
+        author: "Rented123",
+        keywords: `${activeToken} ${last_name} ${dob}`,
+        creator: "Rented123 Verification System",
+      });
+
+      // Save and upload the PDF
       const blob = doc.output("blob");
       const s3Url = await saves3LinkInWordPress(
         blob,
@@ -235,8 +438,6 @@ const PdfGenerator = ({
       setLoading(false);
     }
   };
-
-  // ...Rest of the component (iframe preview, button, email form) remains unchanged
 
   if (error) {
     return (
@@ -443,7 +644,6 @@ const PdfGenerator = ({
         </>
       ) : (
         <button
-          //className="btn"
           disabled={loading}
           onClick={generatePDF}
           style={{
